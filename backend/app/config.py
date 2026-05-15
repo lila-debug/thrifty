@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     database_url: str = "postgresql+asyncpg://thrifty:thrifty@localhost:5432/thrifty"
-    session_secret: str = "change-me"
+    session_secret: str = "change-me-for-local-development-only"
     smtp_host: str = "smtp.postmarkapp.com"
     smtp_port: int = 587
     smtp_user: str = ""

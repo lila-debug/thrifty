@@ -7,10 +7,11 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.config import get_settings
 from app.db import get_session
 from app.main import create_app
-from app.models import Base
-from app.services.magic_link import reset_auth_memory
+from app.models import Base, User
+from app.services.magic_link import issue_session, reset_auth_memory
 
 
 @pytest_asyncio.fixture
@@ -54,3 +55,19 @@ async def client(
     ) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture
+async def authed_client(
+    client: AsyncClient,
+    session_factory: async_sessionmaker[AsyncSession],
+) -> AsyncClient:
+    async with session_factory() as session:
+        user = User(email="lila@example.com")
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+        token = issue_session(get_settings(), user)
+
+    client.headers.update({"Authorization": f"Bearer {token}"})
+    return client

@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, health
+from app.routers import auth, health, subscriptions
 
 
 def create_app() -> FastAPI:
@@ -16,6 +16,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(auth.router)
+    app.include_router(subscriptions.router)
     app.include_router(health.router)
     return app
 
