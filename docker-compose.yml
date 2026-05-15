@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: thrifty
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: thrifty
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thrifty -d thrifty"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_BASE_URL: http://localhost:8000
+      DATABASE_URL: postgresql+asyncpg://thrifty:thrifty@postgres:5432/thrifty
+      LOG_LEVEL: INFO
+      SESSION_SECRET: change-me-for-local-development-only
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres-data:

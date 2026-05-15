@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        run: pip install uv
+      - name: Install backend
+        run: uv sync --frozen --extra dev
+      - name: Ruff
+        run: uv run ruff check app tests
+      - name: Format check
+        run: uv run ruff format --check app tests
+      - name: Tests
+        run: uv run pytest -v
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Install mobile build tooling
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+  copy-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Copy lint
+        run: python scripts/lint_copy.py
+
+  no-secret-fields:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Reject forbidden auth field wording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          needle = "pass" + "word"
+          bad = []
+          for path in Path(".").rglob("*"):
+              if path.suffix not in {".py", ".ts", ".tsx"}:
+                  continue
+              if any(part in {".git", ".venv", "node_modules"} for part in path.parts):
+                  continue
+              if needle in path.read_text(errors="ignore").lower():
+                  bad.append(str(path))
+          if bad:
+              print("\n".join(bad))
+              raise SystemExit(1)
+          PY
