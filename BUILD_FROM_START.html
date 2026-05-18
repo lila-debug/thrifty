@@ -771,7 +771,7 @@
           user: [
             "Confirm this is a hard rule for the whole product.",
             "Tell me whether iOS first is acceptable for the first native client.",
-            "Provide TestSprite MCP details when ready for external testing.",
+            "Provide must-pass user journeys when ready for deeper QA.",
           ],
           proof: [
             "AGENTS.md says no package-manager app stack.",
@@ -1042,27 +1042,27 @@
           title: "Run full verification.",
           label: "QA",
           plain:
-            "Every build slice ends with proof. Local tests catch backend behaviour; device tests catch real app flows; TestSprite can sit above both as an external tester.",
+            "Every build slice ends with proof. Local tests catch backend behaviour; native device tests catch real app flows; optional external testers stay outside the app repository.",
           codex: [
-            "Run backend tests, copy guard, migration SQL, and Docker health.",
+            "Run backend tests, tutorial validation, copy guard, migration SQL, and Docker health.",
             "Run native iOS and Android tests when those clients exist.",
-            "Use TestSprite MCP for guided regression and UI walkthrough checks.",
+            "Keep the required QA path free of npm, npx, and Node.js.",
           ],
           user: [
-            "Provide TestSprite MCP server config and token.",
             "Provide any must-pass user journeys for launch.",
             "Tell me which device sizes matter most.",
+            "Provide test accounts only when live services need them.",
           ],
           proof: [
             "./scripts/test_all.sh passes.",
             "Device tests pass on the native app under test.",
-            "TestSprite report has no launch-blocking issues.",
+            "No required QA step depends on Node.js.",
           ],
-          command: "./scripts/test_all.sh\n# Then native device tests and TestSprite checks",
+          command: "./scripts/test_all.sh\n# Then native XCTest/XCUITest and Android emulator tests",
           layers: [
             ["B", "Backend", "Unit and integration"],
             ["D", "Device", "Native flow tests"],
-            ["T", "TestSprite", "External regression"],
+            ["Q", "QA", "No-Node regression"],
           ],
         },
         {

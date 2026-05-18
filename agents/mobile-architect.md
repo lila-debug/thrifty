@@ -41,7 +41,7 @@ Build the Android client after the iOS flow and backend contract are stable:
 
 - iOS: Xcode build, simulator sign-in flow, add subscription, list refresh, notification permission flow.
 - Android: Gradle build, emulator sign-in flow, add subscription, list refresh, notification permission flow.
-- External: TestSprite MCP once local gates pass.
+- External: optional hosted/manual regression only if it does not add Node.js to the app repository.
 
 ---
 

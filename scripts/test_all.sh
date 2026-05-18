@@ -13,6 +13,7 @@ uv run python -m alembic upgrade head --sql >/tmp/thrifty-alembic.sql
 
 cd "$ROOT"
 python3 -m json.tool tutorial/remotion-context.json >/tmp/thrifty-remotion-context.json
+python3 scripts/test_tutorial_html.py
 python3 scripts/lint_copy.py
 
 docker compose up -d --build

@@ -17,7 +17,7 @@ The old mobile scaffold is legacy context only until it is removed in a dedicate
 |---|---|---|
 | Now | Confirm iOS first, Android second | Keeps the first native client focused. |
 | Now | Three real subscriptions or trials for demo data | Makes the tutorial and launch video feel real. |
-| Testing | TestSprite MCP server config and token | Lets an external tester walk the app as we build. |
+| Testing | Must-pass user journeys and device priorities | Lets us prove the app with Python tests and native device tests. |
 | Auth | Email sender credentials | Required for live magic-link delivery. |
 | iOS | Apple Developer account access | Required for signing, push, and StoreKit work. |
 | Android | Google Play and Firebase access | Required for signing, push, and Play Billing work. |
@@ -37,7 +37,7 @@ The old mobile scaffold is legacy context only until it is removed in a dedicate
 | 7 | Notification token and delivery logging | Trial-conversion integration test passes. |
 | 8 | Native iOS SwiftUI client | Xcode build and simulator flow pass. |
 | 9 | Native Android Kotlin client | Gradle and emulator flow pass. |
-| 10 | External regression with TestSprite | TestSprite report has no launch blockers. |
+| 10 | Full no-Node regression | Python, Docker, tutorial, copy, and native device tests pass. |
 | 11 | Deploy and launch prep | Production `/health` and magic-link email pass. |
 
 ## Local Proof Command
@@ -52,6 +52,7 @@ Expected proof:
 - backend tests pass;
 - migration SQL generation passes;
 - tutorial context validates;
+- interactive tutorial HTML validates;
 - copy guard passes;
 - Docker starts API and database;
 - `/health` returns `{"status":"ok","db":"ok","version":"1.0.0"}`.

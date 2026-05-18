@@ -5,7 +5,7 @@ This file is the working guide for any agent building or reviewing Thrifty. It k
 ## Product Rules
 
 - Build for proactive interception: the primary experience shows future renewal and trial-conversion events only.
-- Keep the backend Python 3.12 and FastAPI. Do not add a JavaScript server, package manager workflow, or application build system outside the existing mobile scaffold.
+- Keep the backend Python 3.12 and FastAPI. Do not add Node.js, npm, npx, pnpm, yarn, a JavaScript server, or a JavaScript application build workflow.
 - Keep auth passwordless. Do not add password fields, password storage, or password reset flows.
 - Never invent subscription facts. Unknown amount, event time, cancel-by time, or terms stay null server-side and render as "unknown" with a reason.
 - Use British/Scottish English in comments, copy, docs, errors, and commit messages.
@@ -37,13 +37,13 @@ Ship the Phase 1 MVP as a usable local application:
 
 | Story | Task | Files |
 |---|---|---|
-| THR-S1 Passwordless sign-in | Magic-link issue, verify, logout, single-use token handling | `backend/app/routers/auth.py`, `backend/app/services/magic_link.py`, `mobile/src/screens/SignInScreen.tsx` |
-| THR-S2 Manual add subscription | Create, list, update, delete subscriptions | `backend/app/routers/subscriptions.py`, `mobile/src/screens/SubscriptionAddScreen.tsx`, `mobile/src/screens/SubscriptionEditScreen.tsx` |
-| THR-S3 Persistence across reinstall | Server-side records and token-backed mobile refresh | `backend/app/models/subscription.py`, `mobile/src/lib/session.ts`, `mobile/App.tsx` |
+| THR-S1 Passwordless sign-in | Magic-link issue, verify, logout, single-use token handling | `backend/app/routers/auth.py`, `backend/app/services/magic_link.py`, future native sign-in screens |
+| THR-S2 Manual add subscription | Create, list, update, delete subscriptions | `backend/app/routers/subscriptions.py`, future native subscription screens |
+| THR-S3 Persistence across reinstall | Server-side records and token-backed mobile refresh | `backend/app/models/subscription.py`, future native session storage |
 | THR-S4 Pre-trial-conversion alert | Compute trial-conversion alert schedule | `backend/app/services/alert_engine.py`, `backend/tests/test_alert_engine.py` |
 | THR-S5 Pre-renewal alert | Compute renewal alert schedule | `backend/app/services/alert_engine.py`, `backend/app/routers/alerts.py` |
-| THR-S6 Uncertainty honesty | Null unknown values and render explicit unknown reasons | `backend/app/schemas/subscription.py`, `mobile/src/components/UnknownBadge.tsx`, `mobile/src/copy/en-GB.ts` |
-| THR-S10 Copy guard | Block banned wording and password drift | `scripts/lint_copy.py`, `mobile/src/copy/en-GB.ts` |
+| THR-S6 Uncertainty honesty | Null unknown values and render explicit unknown reasons | `backend/app/schemas/subscription.py`, `docs/09-COPY-DECK.md`, future native unknown states |
+| THR-S10 Copy guard | Block banned wording and password drift | `scripts/lint_copy.py`, `docs/09-COPY-DECK.md` |
 | THR-S11 CI and deployment | Run lint, tests, deployment checks, and deploy config | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `docker-compose.yml`, `fly.toml` |
 | THR-S12 Walkthrough and launch context | Keep an animated interactive product tutorial and launch-video outline | `OPEN_TUTORIAL.html`, `tutorial/remotion-context.json`, `docs/07-TUTORIAL-AND-LAUNCH-VIDEO.md` |
 | THR-S13 Build from start guide | Keep a no-package-manager rebuild walkthrough and exact handoff checklist | `BUILD_FROM_START.html`, `docs/08-BUILD-FROM-START.md` |
@@ -66,15 +66,22 @@ cd backend && uv run python -m compileall app
 cd backend && uv run --extra dev python -m pytest -v
 cd backend && uv run python -m alembic upgrade head --sql
 python3 -m json.tool tutorial/remotion-context.json >/tmp/thrifty-remotion-context.json
+python3 scripts/test_tutorial_html.py
 python scripts/lint_copy.py
 docker compose up -d --build
 curl -fsS http://localhost:8000/health
 docker compose down
 ```
 
-## TestSprite MCP
+## No-Node QA Harness
 
-Use the TestSprite MCP server only after the local gates pass, or when a visual/native-app interaction must be inspected through a real UI harness. The current first-line checks are backend pytest, copy lint, tutorial JSON validation, and `/health`.
+The application and its standard test path do not depend on TestSprite, npm, npx, or Node.js.
+
+- Backend/API proof: `pytest`, `httpx`, Ruff, `compileall`, Alembic SQL generation, Docker health smoke test.
+- Tutorial proof: `scripts/test_tutorial_html.py`, `json.tool`, and copy lint.
+- iOS proof when the native client exists: Xcode build plus XCTest/XCUITest simulator flows.
+- Android proof when the native client exists: Gradle build plus native emulator tests.
+- External hosted test services are optional only and must not add a Node.js runtime to the app repository.
 
 ---
 

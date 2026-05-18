@@ -30,6 +30,7 @@ OPEN_TUTORIAL.html
 ```
 
 This checks backend formatting, backend tests, migration SQL generation, tutorial context, copy lint, Docker startup, and `/health`.
+It also validates the interactive tutorial files with a Python-only script. No Node.js, npm, or npx is part of the required proof path.
 
 ## Useful Files
 
@@ -40,6 +41,7 @@ This checks backend formatting, backend tests, migration SQL generation, tutoria
 | `OPEN_TUTORIAL.html` | Interactive product and launch walkthrough. |
 | `docs/08-BUILD-FROM-START.md` | Text version of the build path. |
 | `docs/09-COPY-DECK.md` | Preserved product copy. |
+| `docs/10-NO-NODE-QA.md` | Required QA plan without Node.js tooling. |
 | `backend/` | FastAPI backend. |
 
 ---
