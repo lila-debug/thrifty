@@ -30,7 +30,7 @@ Services: `postgres` (16-alpine, named volume), `backend` (built from `backend/D
 
 `.github/workflows/ci.yml` runs on every push and PR:
 - Job `backend`: setup-python@v5, install deps via `uv` or `pip`, run `ruff check`, `ruff format --check`, `mypy app`, `pytest -v --cov=app`.
-- Job `mobile`: setup-node@v4 (Node only as a build tool for RN, not as a runtime — clarify this in a comment), install via `npm ci`, run `npx tsc --noEmit`.
+- No mobile package-manager job. Native app CI is added only when the SwiftUI or Android project exists.
 - Job `copy-lint`: run `python scripts/lint_copy.py` — exits 1 if any banned word found.
 - Job `no-passwords`: `! grep -r 'password' --include='*.py' --include='*.ts' --include='*.tsx' .` — fails if any match found, except in inline comments explicitly marked `# nolint:no-password — banned-words enforcer self-reference`.
 

@@ -8,7 +8,8 @@ Define the allowed system shape. Prevent tool sprawl. Enforce Python-only backen
 
 | Component | Technology | Notes |
 |---|---|---|
-| Mobile app | React Native (Expo bare workflow) | iOS + Android from one codebase; native modules for StoreKit/Play Billing |
+| iOS app | SwiftUI | Native iOS client with StoreKit integration |
+| Android app | Kotlin + Jetpack Compose | Native Android client with Play Billing integration |
 | Backend API | Python 3.12 + FastAPI | Async, type-checked, OpenAPI auto-generated |
 | Database | PostgreSQL 16 | Single instance; managed on PaaS |
 | Scheduler | APScheduler (in-process) for Phase 1; migrate to Celery + Redis at Phase 2 if scale demands | Computes alert_at times, enqueues notification sends |
@@ -22,7 +23,7 @@ Define the allowed system shape. Prevent tool sprawl. Enforce Python-only backen
 1. No receipt-first UI. Primary view is **future events only**.
 2. Never invent values. Unknown fields stored as NULL and rendered as "unknown" with reason.
 3. All copy is British/Scottish English. Banned words enforced via CI lint.
-4. Python only on backend. Any PR introducing Node.js fails CI.
+4. Python only on backend and native mobile clients only. Any PR introducing Node.js fails CI.
 5. No passwords. Any PR introducing a password field fails CI.
 
 ## Data Flow

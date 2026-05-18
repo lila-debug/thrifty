@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thrifty Build From The First Brick</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17231f;
+        --muted: #60736c;
+        --paper: #fbfdfb;
+        --surface: #ffffff;
+        --line: #dbe5df;
+        --leaf: #1f7a55;
+        --mint: #dff5ea;
+        --amber: #f4bf4f;
+        --clay: #cf6f45;
+        --blue: #dcecf7;
+        --shadow: 0 20px 70px rgba(24, 48, 39, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at top left, rgba(223, 245, 234, 0.9), transparent 34rem),
+          linear-gradient(180deg, #ffffff 0%, var(--paper) 54%, #eef8f1 100%);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+      }
+
+      .side {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        overflow: auto;
+        padding: 28px;
+        border-right: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: var(--mint);
+        color: var(--leaf);
+        font-weight: 900;
+        box-shadow: inset 0 0 0 1px rgba(31, 122, 85, 0.16);
+        animation: pulseMark 3s ease-in-out infinite;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+        line-height: 1.12;
+      }
+
+      .side p,
+      .muted {
+        color: var(--muted);
+      }
+
+      .side p {
+        margin-top: 4px;
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      .progress-copy {
+        margin: 24px 0 8px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .progress-track {
+        height: 10px;
+        border-radius: 999px;
+        background: #e8f0eb;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        display: block;
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--leaf), #76b960, var(--amber));
+        transition: width 280ms ease;
+      }
+
+      .steps {
+        margin-top: 22px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .step {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        padding: 10px;
+        border-radius: 12px;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+      }
+
+      .step:hover,
+      .step:focus-visible {
+        outline: 2px solid rgba(31, 122, 85, 0.24);
+        outline-offset: 2px;
+        background: rgba(255, 255, 255, 0.86);
+      }
+
+      .step.active {
+        background: var(--surface);
+        box-shadow: 0 12px 28px rgba(24, 48, 39, 0.1);
+      }
+
+      .step-index {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #ecf5ef;
+        color: var(--leaf);
+        font-weight: 850;
+        font-size: 0.82rem;
+      }
+
+      .step.active .step-index {
+        background: var(--leaf);
+        color: white;
+      }
+
+      .step strong {
+        display: block;
+        font-size: 0.94rem;
+        line-height: 1.16;
+      }
+
+      .step span:last-child {
+        color: var(--muted);
+        font-size: 0.78rem;
+        display: block;
+        margin-top: 3px;
+      }
+
+      .side-actions {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .action,
+      .primary-action,
+      .ghost-action {
+        min-height: 42px;
+        border-radius: 11px;
+        font-weight: 780;
+      }
+
+      .action {
+        background: var(--ink);
+        color: white;
+      }
+
+      .action.secondary,
+      .ghost-action {
+        background: #edf5ef;
+        color: var(--ink);
+      }
+
+      .main {
+        padding: 34px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 30px;
+        align-items: stretch;
+        min-height: 360px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .hero h2 {
+        font-size: clamp(2.5rem, 6vw, 5.6rem);
+        line-height: 0.92;
+        letter-spacing: 0;
+        max-width: 860px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.58;
+        max-width: 690px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .primary-action {
+        padding: 0 18px;
+        background: var(--leaf);
+        color: white;
+      }
+
+      .ghost-action {
+        padding: 0 18px;
+      }
+
+      .build-board {
+        align-self: end;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 12px;
+        transform-origin: 50% 100%;
+        animation: boardFloat 5.5s ease-in-out infinite;
+      }
+
+      .board-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .board-title {
+        font-weight: 900;
+        font-size: 1.06rem;
+      }
+
+      .status-pill {
+        border-radius: 999px;
+        padding: 7px 10px;
+        background: var(--mint);
+        color: var(--leaf);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .build-layers {
+        display: grid;
+        gap: 10px;
+      }
+
+      .layer {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fbfdfb;
+        animation: riseIn 280ms ease both;
+      }
+
+      .layer:nth-child(2) {
+        animation-delay: 70ms;
+      }
+
+      .layer:nth-child(3) {
+        animation-delay: 140ms;
+      }
+
+      .layer-icon {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--blue);
+        font-weight: 900;
+        color: #23556f;
+      }
+
+      .layer strong {
+        display: block;
+      }
+
+      .layer span {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+        gap: 24px;
+        padding-top: 28px;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 12px 32px rgba(24, 48, 39, 0.07);
+      }
+
+      .focus-panel {
+        padding: 26px;
+        min-height: 570px;
+      }
+
+      .focus-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: start;
+        margin-bottom: 22px;
+      }
+
+      .focus-head h3 {
+        font-size: clamp(1.9rem, 3vw, 3.2rem);
+        line-height: 1;
+      }
+
+      .phase-tag {
+        flex: 0 0 auto;
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: var(--amber);
+        color: #49310f;
+        font-weight: 880;
+        font-size: 0.8rem;
+      }
+
+      .focus-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(250px, 0.82fr);
+        gap: 18px;
+      }
+
+      .task-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fbfdfb;
+        padding: 16px;
+        animation: riseIn 260ms ease both;
+      }
+
+      .task-card h4 {
+        margin: 0 0 10px;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .task-card p,
+      .task-card li {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .task-card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .command-box {
+        background: #17231f;
+        color: #ecfff5;
+        border-radius: 14px;
+        padding: 14px;
+        overflow: auto;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+
+      .checklist {
+        display: grid;
+        gap: 10px;
+      }
+
+      .check-row {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+      }
+
+      .check-dot {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--mint);
+        color: var(--leaf);
+        font-weight: 900;
+      }
+
+      .right-panel {
+        padding: 20px;
+        display: grid;
+        align-content: start;
+        gap: 16px;
+      }
+
+      .motion-strip {
+        height: 4px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--leaf), var(--amber), var(--clay), var(--leaf));
+        background-size: 230% 100%;
+        animation: moveStrip 4.5s linear infinite;
+      }
+
+      .handoff-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .handoff {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fbfdfb;
+      }
+
+      .handoff strong {
+        display: block;
+        font-size: 1.15rem;
+      }
+
+      .handoff span {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .script {
+        border-left: 4px solid var(--leaf);
+        background: #f3faf5;
+        border-radius: 0 14px 14px 0;
+        padding: 14px 16px;
+        color: #30463d;
+        line-height: 1.55;
+        animation: glowIn 320ms ease both;
+      }
+
+      .next-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .next-item {
+        display: grid;
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 10px;
+        font-size: 0.88rem;
+      }
+
+      .next-item strong {
+        color: var(--clay);
+      }
+
+      .footer {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+
+      @keyframes pulseMark {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.06);
+        }
+      }
+
+      @keyframes boardFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-0.3deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(0.3deg);
+        }
+      }
+
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes glowIn {
+        from {
+          opacity: 0.65;
+          box-shadow: inset 0 0 0 rgba(31, 122, 85, 0);
+        }
+        to {
+          opacity: 1;
+          box-shadow: inset 12px 0 24px rgba(31, 122, 85, 0.08);
+        }
+      }
+
+      @keyframes moveStrip {
+        from {
+          background-position: 0% 50%;
+        }
+        to {
+          background-position: 230% 50%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .app,
+        .hero,
+        .content,
+        .focus-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          position: static;
+          height: auto;
+        }
+
+        .main {
+          padding: 22px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .side,
+        .main,
+        .focus-panel,
+        .right-panel {
+          padding: 18px;
+        }
+
+        .hero h2 {
+          font-size: 2.45rem;
+        }
+
+        .handoff-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .focus-head {
+          display: grid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="side">
+        <div class="brand">
+          <div class="mark">T</div>
+          <div>
+            <h1>Build Thrifty from the first brick</h1>
+            <p>No package-manager mobile stack. Python API first. Native apps after the contract is proven.</p>
+          </div>
+        </div>
+
+        <div class="progress-copy">
+          <span id="progressText">Step 1 of 12</span>
+          <span id="progressPercent">8%</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span class="progress-bar" id="progressBar"></span></div>
+
+        <nav class="steps" id="stepList" aria-label="Build steps"></nav>
+
+        <div class="side-actions">
+          <button class="action secondary" id="prevButton" type="button">Previous</button>
+          <button class="action" id="nextButton" type="button">Next</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="hero" aria-labelledby="heroTitle">
+          <div class="hero-copy">
+            <div>
+              <h2 id="heroTitle">The clean build path is contract first.</h2>
+              <p>
+                This is the walkthrough I would use to rebuild Thrifty from the start: lock the
+                product promise, prove the Python API, then build native mobile clients against a
+                stable contract. You provide accounts and keys only when a step genuinely needs them.
+              </p>
+            </div>
+            <div class="hero-actions">
+              <button class="primary-action" id="tourButton" type="button" aria-pressed="false">
+                Start guided tour
+              </button>
+              <button class="ghost-action" id="copyButton" type="button">Copy exact steps</button>
+              <a class="ghost-action" href="./OPEN_TUTORIAL.html" style="display: inline-grid; place-items: center; text-decoration: none">
+                Product tour
+              </a>
+            </div>
+          </div>
+
+          <div class="build-board" aria-label="Build layers">
+            <div class="board-top">
+              <div class="board-title">Clean build stack</div>
+              <span class="status-pill">No package-manager app stack</span>
+            </div>
+            <div class="build-layers" id="layerList"></div>
+          </div>
+        </section>
+
+        <section class="content">
+          <article class="panel focus-panel">
+            <div class="focus-head">
+              <h3 id="stepTitle">Reset the build rules.</h3>
+              <span class="phase-tag" id="phaseTag">Phase 00</span>
+            </div>
+
+            <div class="focus-grid">
+              <div class="task-card">
+                <h4>Codex does</h4>
+                <div class="checklist" id="codexList"></div>
+              </div>
+
+              <div class="task-card">
+                <h4>You provide</h4>
+                <div class="checklist" id="userList"></div>
+              </div>
+
+              <div class="task-card">
+                <h4>Proof it worked</h4>
+                <ul id="proofList"></ul>
+              </div>
+
+              <div class="task-card">
+                <h4>Command or artefact</h4>
+                <pre class="command-box" id="commandBox"></pre>
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel right-panel">
+            <div class="motion-strip" aria-hidden="true"></div>
+            <div class="handoff-grid">
+              <div class="handoff">
+                <strong>12</strong>
+                <span>build steps</span>
+              </div>
+              <div class="handoff">
+                <strong>3</strong>
+                <span>things you provide first</span>
+              </div>
+              <div class="handoff">
+                <strong>1</strong>
+                <span>Python API contract</span>
+              </div>
+              <div class="handoff">
+                <strong>0</strong>
+                <span>package-manager app stack</span>
+              </div>
+            </div>
+
+            <div>
+              <h3>Plain-English version</h3>
+              <p class="script" id="plainText"></p>
+            </div>
+
+            <div>
+              <h3>Build queue</h3>
+              <div class="next-list" id="queueList"></div>
+            </div>
+          </aside>
+        </section>
+
+        <footer class="footer">
+          Based on true events. Sadly.<br />
+          Canadian Kind, Scottish Strong.<br />
+          © 2024–2026 Lila Olufemi Abegunrin · Thrifty™ · Trademarks and Patents Pending
+          (CIPO) · REVOLUTIONISING LIFE SINCE 1982™
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      const steps = [
+        {
+          phase: "Phase 00",
+          title: "Reset the build rules.",
+          label: "Rules",
+          plain:
+            "We stop treating the old mobile scaffold as the app. The rebuild starts with one rulebook: Python API, native mobile clients, no package-manager app stack.",
+          codex: [
+            "Mark the old mobile scaffold as legacy until it is removed in a clean slice.",
+            "Update the build plan so every future step follows the new rule.",
+            "Keep useful copy and API ideas, but do not keep the stack.",
+          ],
+          user: [
+            "Confirm this is a hard rule for the whole product.",
+            "Tell me whether iOS first is acceptable for the first native client.",
+            "Provide TestSprite MCP details when ready for external testing.",
+          ],
+          proof: [
+            "AGENTS.md says no package-manager app stack.",
+            "The local proof script does not call a JavaScript package manager.",
+            "The old dependency folder has been removed from disk.",
+          ],
+          command: "Open BUILD_FROM_START.html\nUse this guide as the build control room.",
+          layers: [
+            ["0", "Rulebook", "No package-manager app stack"],
+            ["1", "Backend", "Python API first"],
+            ["2", "Mobile", "Native clients after contract proof"],
+          ],
+        },
+        {
+          phase: "Phase 01",
+          title: "Lock the product promise.",
+          label: "Product",
+          plain:
+            "Before writing screens, we lock what Thrifty is allowed to be: future charge interception, honest unknowns, passwordless sign-in, and no receipt-first home screen.",
+          codex: [
+            "Turn the PRD into a short founder-facing rules page.",
+            "Keep the backlog split into epics, stories, tasks, and proof gates.",
+            "Remove any product language that drifts into past-charge tracking.",
+          ],
+          user: [
+            "Provide any wording that must appear in the brand story.",
+            "Confirm markets: UK, Canada, Australia, Europe, Africa.",
+            "Flag any term you never want used in the app.",
+          ],
+          proof: [
+            "PRD, architecture, data model, and backlog agree.",
+            "Every story has a testable acceptance condition.",
+            "The walkthrough and launch story match the same product promise.",
+          ],
+          command: "docs/01-PRD.md\ndocs/05-BACKLOG.md\nAGENTS.md",
+          layers: [
+            ["P", "Promise", "Intercept before money leaves"],
+            ["S", "Scope", "Phase 1 only"],
+            ["G", "Guardrails", "No invented facts"],
+          ],
+        },
+        {
+          phase: "Phase 02",
+          title: "Build the Python API shell.",
+          label: "API",
+          plain:
+            "We build the backend before any app screens, because the mobile clients should not invent their own data shape.",
+          codex: [
+            "Create FastAPI app wiring, settings, database session, and health route.",
+            "Add structured logging and Sentry hooks behind environment settings.",
+            "Keep secrets in environment variables, never in source files.",
+          ],
+          user: [
+            "Pick the public API domain when deployment starts.",
+            "Provide Sentry only when you want live error reporting.",
+            "No other input needed for the local API shell.",
+          ],
+          proof: [
+            "GET /health returns status ok.",
+            "Backend imports compile.",
+            "Docker can start API and database together.",
+          ],
+          command: "cd backend\nuv run python -m compileall app\ncurl -fsS http://localhost:8000/health",
+          layers: [
+            ["A", "FastAPI", "Health and routers"],
+            ["D", "Database", "Async session"],
+            ["L", "Logs", "Structured stdout"],
+          ],
+        },
+        {
+          phase: "Phase 03",
+          title: "Create the data model.",
+          label: "Data",
+          plain:
+            "We create the tables that make Thrifty durable: users, magic links, subscriptions, alerts, notification tokens, and delivery logs.",
+          codex: [
+            "Write Alembic migrations for the canonical schema.",
+            "Keep amount, event time, cancel-by, and terms nullable.",
+            "Enforce source and event enums through database constraints.",
+          ],
+          user: [
+            "Confirm any extra subscription fields you know are essential.",
+            "Provide examples of confusing provider terms if you have them.",
+            "No database account needed until deployment.",
+          ],
+          proof: [
+            "Alembic SQL generation passes.",
+            "Unknown values can remain null.",
+            "Platform sync key is user, source, and source product id.",
+          ],
+          command: "cd backend\nuv run python -m alembic upgrade head --sql",
+          layers: [
+            ["U", "Users", "Account identity"],
+            ["S", "Subscriptions", "Future events"],
+            ["A", "Alerts", "Scheduled warnings"],
+          ],
+        },
+        {
+          phase: "Phase 04",
+          title: "Add passwordless sign-in.",
+          label: "Auth",
+          plain:
+            "The sign-in flow uses a single-use secure link. No secret phrase, no stored password, no reset flow.",
+          codex: [
+            "Build start, verify, and logout endpoints.",
+            "Store token hashes, expiry, and consumed timestamps.",
+            "Add rate limiting so link requests cannot be spammed.",
+          ],
+          user: [
+            "Pick the sender email address.",
+            "Provide Postmark, Resend, or SMTP credentials for live email.",
+            "Provide app link domain before mobile deep links are final.",
+          ],
+          proof: [
+            "Auth tests cover issue, verify, expiry, consumed links, and rate limit.",
+            "Unexpected secret fields are rejected.",
+            "Session token is returned only after verification.",
+          ],
+          command: "cd backend\nuv run --extra dev python -m pytest tests/test_auth.py -v",
+          layers: [
+            ["1", "Start", "Request secure link"],
+            ["2", "Verify", "Consume link once"],
+            ["3", "Session", "Use bearer token"],
+          ],
+        },
+        {
+          phase: "Phase 05",
+          title: "Build subscription CRUD and sync.",
+          label: "Subscriptions",
+          plain:
+            "Manual add comes first because it works even before store integrations. Platform sync uses the same canonical subscription model later.",
+          codex: [
+            "Create list, create, patch, delete, and platform sync endpoints.",
+            "Soft-delete records and cancel pending alerts when needed.",
+            "Keep unknown amount or timing honest in API responses.",
+          ],
+          user: [
+            "Give me three real subscription examples to seed the demo.",
+            "Provide any provider cancellation links you want tested.",
+            "Confirm which currencies must be shown in the first launch demo.",
+          ],
+          proof: [
+            "CRUD tests pass.",
+            "Platform sync upserts instead of duplicating records.",
+            "A new signed-in session can fetch existing subscriptions.",
+          ],
+          command: "cd backend\nuv run --extra dev python -m pytest tests/test_subscriptions.py -v",
+          layers: [
+            ["M", "Manual", "Always available"],
+            ["P", "Platform", "Phase 2 ingestion"],
+            ["D", "Durable", "Server-side list"],
+          ],
+        },
+        {
+          phase: "Phase 06",
+          title: "Build the alert engine.",
+          label: "Alerts",
+          plain:
+            "This is the heart of Thrifty. The backend schedules warnings before renewal or trial conversion, then skips times that are already in the past.",
+          codex: [
+            "Compute T-7d, T-3d, T-24h, and T-2h lead times.",
+            "Cancel superseded alerts when a subscription changes.",
+            "Keep every alert tied to user and subscription ownership.",
+          ],
+          user: [
+            "Confirm the default lead times are right.",
+            "Tell me if any subscription type needs a different warning pattern.",
+            "No provider credentials needed for local scheduling tests.",
+          ],
+          proof: [
+            "Alert engine creates four lead times.",
+            "Past lead times are skipped.",
+            "Deleted subscriptions cancel scheduled alerts.",
+          ],
+          command: "cd backend\nuv run --extra dev python -m pytest tests/test_alert_engine.py -v",
+          layers: [
+            ["7d", "First warning", "Planning window"],
+            ["3d", "Second warning", "Decision window"],
+            ["2h", "Final warning", "Act now"],
+          ],
+        },
+        {
+          phase: "Phase 07",
+          title: "Add notification delivery evidence.",
+          label: "Notifications",
+          plain:
+            "A warning app needs proof of what happened. Every delivery attempt should end with a recorded outcome.",
+          codex: [
+            "Store iOS and Android notification tokens.",
+            "Record delivery attempts and reasons.",
+            "Return clear failure states without exposing provider secrets.",
+          ],
+          user: [
+            "Provide Apple push credentials for iOS.",
+            "Provide Firebase credentials for Android.",
+            "Tell me what notification tone feels right for Thrifty.",
+          ],
+          proof: [
+            "Notification token endpoint works.",
+            "No-token cases are logged as skipped_no_token.",
+            "Trial-conversion integration test passes.",
+          ],
+          command: "cd backend\nuv run --extra dev python -m pytest tests/test_integration_trial_conversion.py -v",
+          layers: [
+            ["T", "Token", "Register device"],
+            ["S", "Send", "Attempt delivery"],
+            ["L", "Log", "Record outcome"],
+          ],
+        },
+        {
+          phase: "Phase 08",
+          title: "Build native iOS first.",
+          label: "iOS",
+          plain:
+            "Once the backend contract is stable, build the iOS client natively in SwiftUI. This keeps store billing and notification behaviour close to the platform.",
+          codex: [
+            "Create SwiftUI app shell with sign-in, future list, add/edit, detail, and settings.",
+            "Wire URLSession to the FastAPI contract.",
+            "Add StoreKit ingestion as the Phase 2 native source.",
+          ],
+          user: [
+            "Confirm iOS is the first native client.",
+            "Provide Apple Developer account access when signing starts.",
+            "Provide App Store product details when monetisation starts.",
+          ],
+          proof: [
+            "Xcode build passes.",
+            "Simulator can sign in against local or staging API.",
+            "StoreKit test plan detects sample subscriptions.",
+          ],
+          command: "xcodebuild test -scheme Thrifty -destination 'platform=iOS Simulator,name=iPhone 16'",
+          layers: [
+            ["UI", "SwiftUI", "Native screens"],
+            ["API", "URLSession", "Contract client"],
+            ["SK", "StoreKit", "Phase 2 source"],
+          ],
+        },
+        {
+          phase: "Phase 09",
+          title: "Build native Android second.",
+          label: "Android",
+          plain:
+            "Android follows the same backend contract with native Kotlin and Compose, then adds Play Billing ingestion.",
+          codex: [
+            "Create Compose screens matching the iOS flow.",
+            "Wire the same auth, subscription, alert, and token endpoints.",
+            "Add Play Billing ingestion as the Android platform source.",
+          ],
+          user: [
+            "Provide Google Play Developer access when signing starts.",
+            "Provide Firebase project details for push notifications.",
+            "Provide Play Billing product details when monetisation starts.",
+          ],
+          proof: [
+            "Gradle build passes.",
+            "Emulator flow passes sign-in and manual add.",
+            "Play Billing test purchase syncs into the backend.",
+          ],
+          command: "./gradlew test\n./gradlew connectedAndroidTest",
+          layers: [
+            ["UI", "Compose", "Native screens"],
+            ["API", "Ktor/Retrofit", "Contract client"],
+            ["PB", "Play Billing", "Phase 2 source"],
+          ],
+        },
+        {
+          phase: "Phase 10",
+          title: "Run full verification.",
+          label: "QA",
+          plain:
+            "Every build slice ends with proof. Local tests catch backend behaviour; device tests catch real app flows; TestSprite can sit above both as an external tester.",
+          codex: [
+            "Run backend tests, copy guard, migration SQL, and Docker health.",
+            "Run native iOS and Android tests when those clients exist.",
+            "Use TestSprite MCP for guided regression and UI walkthrough checks.",
+          ],
+          user: [
+            "Provide TestSprite MCP server config and token.",
+            "Provide any must-pass user journeys for launch.",
+            "Tell me which device sizes matter most.",
+          ],
+          proof: [
+            "./scripts/test_all.sh passes.",
+            "Device tests pass on the native app under test.",
+            "TestSprite report has no launch-blocking issues.",
+          ],
+          command: "./scripts/test_all.sh\n# Then native device tests and TestSprite checks",
+          layers: [
+            ["B", "Backend", "Unit and integration"],
+            ["D", "Device", "Native flow tests"],
+            ["T", "TestSprite", "External regression"],
+          ],
+        },
+        {
+          phase: "Phase 11",
+          title: "Deploy and prepare launch.",
+          label: "Launch",
+          plain:
+            "After proof passes locally, deploy the API, connect live credentials, record the walkthrough, and turn the same flow into the launch video.",
+          codex: [
+            "Deploy FastAPI to Fly.io with managed Postgres.",
+            "Validate live /health and auth email delivery.",
+            "Keep this tutorial and product tour as launch context.",
+          ],
+          user: [
+            "Provide domain access.",
+            "Provide Fly.io or deployment account access.",
+            "Provide final brand copy and launch call-to-action.",
+          ],
+          proof: [
+            "Production /health returns ok.",
+            "Magic-link email reaches a real inbox.",
+            "Launch walkthrough matches the live product flow.",
+          ],
+          command: "flyctl deploy --config fly.toml\ncurl -fsS https://YOUR_DOMAIN/health",
+          layers: [
+            ["D", "Deploy", "API live"],
+            ["E", "Email", "Auth works"],
+            ["V", "Video", "Launch story"],
+          ],
+        },
+      ];
+
+      let current = 0;
+      let timer = null;
+
+      const stepList = document.getElementById("stepList");
+      const progressText = document.getElementById("progressText");
+      const progressPercent = document.getElementById("progressPercent");
+      const progressBar = document.getElementById("progressBar");
+      const stepTitle = document.getElementById("stepTitle");
+      const phaseTag = document.getElementById("phaseTag");
+      const codexList = document.getElementById("codexList");
+      const userList = document.getElementById("userList");
+      const proofList = document.getElementById("proofList");
+      const commandBox = document.getElementById("commandBox");
+      const plainText = document.getElementById("plainText");
+      const queueList = document.getElementById("queueList");
+      const layerList = document.getElementById("layerList");
+      const tourButton = document.getElementById("tourButton");
+
+      function renderSteps() {
+        stepList.innerHTML = "";
+        steps.forEach((step, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `step${index === current ? " active" : ""}`;
+          button.setAttribute("aria-current", index === current ? "step" : "false");
+          button.innerHTML = `
+            <span class="step-index">${String(index).padStart(2, "0")}</span>
+            <span><strong>${step.title}</strong><span>${step.label}</span></span>
+          `;
+          button.addEventListener("click", () => {
+            current = index;
+            render();
+          });
+          stepList.appendChild(button);
+        });
+      }
+
+      function checklist(target, items) {
+        target.innerHTML = "";
+        items.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "check-row";
+          row.innerHTML = `<span class="check-dot">✓</span><p>${item}</p>`;
+          target.appendChild(row);
+        });
+      }
+
+      function bulletList(target, items) {
+        target.innerHTML = "";
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          target.appendChild(li);
+        });
+      }
+
+      function renderLayers(step) {
+        layerList.innerHTML = "";
+        step.layers.forEach(([icon, title, detail]) => {
+          const row = document.createElement("div");
+          row.className = "layer";
+          row.innerHTML = `
+            <span class="layer-icon">${icon}</span>
+            <span><strong>${title}</strong><span>${detail}</span></span>
+          `;
+          layerList.appendChild(row);
+        });
+      }
+
+      function renderQueue() {
+        queueList.innerHTML = "";
+        steps.forEach((step, index) => {
+          const row = document.createElement("div");
+          row.className = "next-item";
+          row.innerHTML = `<strong>${step.phase}</strong><span>${step.title}</span>`;
+          if (index === current) {
+            row.style.fontWeight = "850";
+          }
+          queueList.appendChild(row);
+        });
+      }
+
+      function render() {
+        const step = steps[current];
+        const percent = Math.round(((current + 1) / steps.length) * 100);
+        progressText.textContent = `Step ${current + 1} of ${steps.length}`;
+        progressPercent.textContent = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
+        stepTitle.textContent = step.title;
+        phaseTag.textContent = step.phase;
+        plainText.textContent = step.plain;
+        commandBox.textContent = step.command;
+        tourButton.textContent = timer ? "Pause guided tour" : "Start guided tour";
+        tourButton.setAttribute("aria-pressed", String(Boolean(timer)));
+        checklist(codexList, step.codex);
+        checklist(userList, step.user);
+        bulletList(proofList, step.proof);
+        renderLayers(step);
+        renderQueue();
+        renderSteps();
+      }
+
+      document.getElementById("prevButton").addEventListener("click", () => {
+        current = (current - 1 + steps.length) % steps.length;
+        render();
+      });
+
+      document.getElementById("nextButton").addEventListener("click", () => {
+        current = (current + 1) % steps.length;
+        render();
+      });
+
+      tourButton.addEventListener("click", () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+          render();
+          return;
+        }
+        timer = setInterval(() => {
+          current = (current + 1) % steps.length;
+          render();
+        }, 4200);
+        render();
+      });
+
+      document.getElementById("copyButton").addEventListener("click", async () => {
+        const text = steps
+          .map((step, index) => {
+            return `${index + 1}. ${step.title}\nCodex: ${step.codex.join(" ")}\nYou: ${step.user.join(" ")}\nProof: ${step.proof.join(" ")}\n`;
+          })
+          .join("\n");
+        await navigator.clipboard.writeText(text);
+        plainText.textContent = "Copied. This is now ready to paste into a build brief or launch checklist.";
+        setTimeout(() => {
+          plainText.textContent = steps[current].plain;
+        }, 1800);
+      });
+
+      render();
+    </script>
+  </body>
+</html>

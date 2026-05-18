@@ -14,12 +14,10 @@ SKIPPED_PARTS = {
     ".ruff_cache",
     ".venv",
     "agents",
-    "node_modules",
     "__pycache__",
 }
 SKIPPED_NAMES = {
     "goal.md",
-    "package-lock.json",
     "uv.lock",
     "lint_copy.py",
 }

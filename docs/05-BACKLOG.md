@@ -4,7 +4,7 @@
 
 | ID | Name | Phase | Priority |
 |---|---|---|---|
-| THR-E1 | Foundations: RN shell + Python API + passwordless auth | 1 | P0 |
+| THR-E1 | Foundations: native clients + Python API + passwordless auth | 1 | P0 |
 | THR-E2 | Manual add + cross-device persistence | 1 | P0 |
 | THR-E3 | Proactive alerting + notifications | 1 | P0 |
 | THR-E4 | StoreKit ingestion (iOS) | 2 | P1 |
@@ -35,13 +35,13 @@
 |---|---|---|---|---|
 | THR-T1 | S1 | FastAPI skeleton + Postgres + Alembic migrations | Backend | S |
 | THR-T2 | S1 | Magic-link auth (email send, token hash, verify, session JWT) | Backend | M |
-| THR-T3 | S1 | RN Expo shell + sign-in screen + email-link deep handler | Mobile | M |
+| THR-T3 | S1 | Native iOS SwiftUI shell + sign-in screen + email-link deep handler | Mobile | M |
 | THR-T4 | S2 | Subscriptions table + CRUD endpoints | Backend | S |
-| THR-T5 | S2 | Manual-add screen + edit screen + list screen | Mobile | M |
+| THR-T5 | S2 | Native iOS manual-add screen + edit screen + list screen | Mobile | M |
 | THR-T6 | S3 | Sync-on-launch reconciliation | Mobile + Backend | S |
 | THR-T7 | S4/S5/S6 | Alert engine: compute next_event_at, alert_at × 4, persist, idempotent recompute | Backend | M |
 | THR-T8 | S4/S5 | APScheduler worker + APNs/FCM send + delivery log | Backend | L |
-| THR-T9 | S4/S5 | Mobile push registration + local notification fallback | Mobile | M |
+| THR-T9 | S4/S5 | Native push registration + local notification fallback | Mobile | M |
 | THR-T10 | S6 | UI copy rules for "unknown" states; British/Scottish lint | Mobile + Product | S |
 | THR-T11 | All | CI: pytest + ruff + RN type-check + banned-words lint | DevOps | S |
 | THR-T12 | All | Sentry + structured JSON logging | Backend + Mobile | S |

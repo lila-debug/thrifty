@@ -6,7 +6,7 @@ This file turns the locked goal, PRD, architecture, data model, API contract, an
 
 | Epic | Outcome |
 |---|---|
-| THR-E1 | Python API, React Native shell, and passwordless sign-in exist as the foundation. |
+| THR-E1 | Python API, native client plan, and passwordless sign-in exist as the foundation. |
 | THR-E2 | Users can add subscriptions manually and see the same future-event list after signing in again. |
 | THR-E3 | The backend computes proactive alerts and records delivery attempts before a charge or trial conversion. |
 
@@ -29,14 +29,14 @@ This file turns the locked goal, PRD, architecture, data model, API contract, an
 | 2 | THR-T2 | Auth tests prove link issue, rate limit, verification, expiry, and consumed-token handling. |
 | 3 | THR-T4, THR-T6 | Subscription CRUD and platform sync tests pass. |
 | 4 | THR-T7, THR-T8 | Alert engine, scheduler tick, and delivery log tests pass. |
-| 5 | THR-T3, THR-T5, THR-T9 | Mobile TypeScript check passes with sign-in, future-event list, manual add, push, and local fallback modules. |
+| 5 | THR-T3, THR-T5, THR-T9 | Native client plan is ready; iOS SwiftUI build becomes the next implementation slice. |
 | 6 | THR-T10 | Copy pack compiles and banned-words lint passes. |
 | 7 | THR-T11, THR-T12 | Docker, CI, structured logging, bootstrap script, and deployment doc are present. |
 
 ## Rules Applied During Build
 
 - Backend remains Python 3.12 and FastAPI.
-- Node.js files are limited to the React Native mobile app.
+- Node.js is banned from the application stack.
 - The primary mobile view shows future events only.
 - Nullable financial and timing fields stay unknown until a trusted source provides them.
 - Generated Markdown keeps the required footer.

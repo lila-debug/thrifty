@@ -1,0 +1,90 @@
+{
+  "project": "Thrifty",
+  "format": {
+    "primary": "vertical",
+    "width": 1080,
+    "height": 1350,
+    "fps": 30,
+    "targetDurationSeconds": 90
+  },
+  "visualDirection": {
+    "palette": ["#fbfdfb", "#1a2622", "#1f7a55", "#f6c65b", "#cf6f45", "#dcecf7"],
+    "tone": "clear, practical, light-mode, evidence-led",
+    "motion": "calm progress reveals, phone close-ups, alert timing ticks, proof overlays",
+    "avoid": ["purple", "pink", "receipt-first framing", "fake certainty", "password language"]
+  },
+  "scenes": [
+    {
+      "id": "sign-in",
+      "timecode": "0:00",
+      "durationSeconds": 8,
+      "title": "Build trust before asking for action.",
+      "narration": "Thrifty starts with a secure link, not another password. Sign in once, then let the app remember what might charge next.",
+      "visuals": ["email field", "magic-link confirmation", "session issued"],
+      "proof": ["POST /v1/auth/start", "POST /v1/auth/verify", "no password fields"]
+    },
+    {
+      "id": "future-events",
+      "timecode": "0:08",
+      "durationSeconds": 9,
+      "title": "Put future charges in the first viewport.",
+      "narration": "The main screen is not a receipt drawer. It is a warning system for the next thing trying to charge you.",
+      "visuals": ["charges incoming list", "renewal row", "trial conversion row"],
+      "proof": ["future events only", "next_event_at", "next_event_kind"]
+    },
+    {
+      "id": "manual-add",
+      "timecode": "0:17",
+      "durationSeconds": 10,
+      "title": "Add a subscription without inventing missing facts.",
+      "narration": "If Thrifty does not know the amount or deadline, it says so. No fake certainty, no made-up cancellation window.",
+      "visuals": ["manual add form", "unknown badge", "reason text"],
+      "proof": ["service_name required", "amount nullable", "precision unknown"]
+    },
+    {
+      "id": "persistence",
+      "timecode": "0:27",
+      "durationSeconds": 11,
+      "title": "Sync platform sources into one durable list.",
+      "narration": "Delete the app, change phones, come back later: the list lives with the account, not with one fragile install.",
+      "visuals": ["manual source", "StoreKit placeholder", "Play Billing placeholder", "single list"],
+      "proof": ["GET /v1/subscriptions", "platform upsert", "cross-session fetch"]
+    },
+    {
+      "id": "alerts",
+      "timecode": "0:38",
+      "durationSeconds": 12,
+      "title": "Schedule alerts before the charge.",
+      "narration": "Thrifty does the boring timing maths for you: seven days, three days, one day, and two hours before it matters.",
+      "visuals": ["countdown rail", "T-7d", "T-3d", "T-24h", "T-2h"],
+      "proof": ["four lead times", "past lead times skipped", "deleted subscriptions cancel alerts"]
+    },
+    {
+      "id": "notifications",
+      "timecode": "0:50",
+      "durationSeconds": 13,
+      "title": "Log delivery honestly.",
+      "narration": "When a warning goes out, Thrifty records what happened. Delivered, failed, or skipped: the system keeps the receipt for the reminder.",
+      "visuals": ["push token", "local fallback", "delivery log"],
+      "proof": ["notification token endpoint", "skipped_no_token", "local fallback typecheck"]
+    },
+    {
+      "id": "proof",
+      "timecode": "1:03",
+      "durationSeconds": 12,
+      "title": "Prove the build, then show the proof.",
+      "narration": "Before this becomes a launch story, it has to be a working system. The test runner gives one clean proof path.",
+      "visuals": ["test runner", "26 passing", "health ok", "db ok"],
+      "proof": ["./scripts/test_all.sh", "pytest", "tutorial context", "Docker health"]
+    },
+    {
+      "id": "launch-spine",
+      "timecode": "1:15",
+      "durationSeconds": 15,
+      "title": "Turn the walkthrough into the launch video.",
+      "narration": "This is the launch spine: problem, interception, honest unknowns, alerts, proof, and a crisp reason to install.",
+      "visuals": ["scene stack", "phone hero", "final promise"],
+      "proof": ["interactive tutorial", "Remotion context", "launch script"]
+    }
+  ]
+}

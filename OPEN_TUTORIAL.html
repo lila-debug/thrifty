@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thrifty Interactive Walkthrough</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1a2622;
+        --muted: #66746f;
+        --line: #dbe5df;
+        --paper: #fbfdfb;
+        --surface: #ffffff;
+        --mint: #dff5ea;
+        --leaf: #1f7a55;
+        --amber: #f6c65b;
+        --clay: #cf6f45;
+        --blue: #dcecf7;
+        --shadow: 0 18px 60px rgba(28, 51, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      }
+
+      .rail {
+        border-right: 1px solid var(--line);
+        background: linear-gradient(180deg, #ffffff 0%, #eff8f1 100%);
+        padding: 28px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: auto;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+
+      .mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--mint);
+        color: var(--leaf);
+        font-weight: 900;
+        box-shadow: inset 0 0 0 1px rgba(31, 122, 85, 0.14);
+        animation: breathe 3.4s ease-in-out infinite;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.18rem;
+        line-height: 1.15;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-top: 4px;
+      }
+
+      .progress-wrap {
+        margin: 24px 0 26px;
+      }
+
+      .progress-copy {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+      }
+
+      .progress {
+        height: 10px;
+        border-radius: 999px;
+        background: #e6eee9;
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--leaf), #78b95f, var(--amber));
+        transition: width 260ms ease;
+      }
+
+      .steps {
+        display: grid;
+        gap: 8px;
+      }
+
+      .step-button {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+      }
+
+      .step-button:hover,
+      .step-button:focus-visible {
+        outline: 2px solid rgba(31, 122, 85, 0.24);
+        outline-offset: 2px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .step-button.active {
+        background: var(--surface);
+        box-shadow: 0 10px 30px rgba(28, 51, 42, 0.1);
+      }
+
+      .step-number {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #edf5ef;
+        color: var(--leaf);
+        font-weight: 800;
+        font-size: 0.85rem;
+      }
+
+      .step-button.active .step-number {
+        background: var(--leaf);
+        color: white;
+      }
+
+      .step-title {
+        font-weight: 750;
+        line-height: 1.2;
+      }
+
+      .step-kind {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 3px;
+      }
+
+      .rail-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 24px;
+      }
+
+      .small-action,
+      .primary-action,
+      .ghost-action {
+        min-height: 42px;
+        border-radius: 10px;
+        font-weight: 760;
+      }
+
+      .small-action {
+        background: var(--ink);
+        color: white;
+      }
+
+      .small-action.secondary,
+      .ghost-action {
+        background: #edf5ef;
+        color: var(--ink);
+      }
+
+      .main {
+        padding: 34px;
+      }
+
+      .hero {
+        min-height: 310px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+        gap: 28px;
+        align-items: stretch;
+        padding-bottom: 30px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .hero h2 {
+        max-width: 820px;
+        font-size: clamp(2.4rem, 6vw, 5.4rem);
+        line-height: 0.93;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 640px;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.55;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .primary-action {
+        padding: 0 18px;
+        background: var(--leaf);
+        color: white;
+      }
+
+      .ghost-action {
+        padding: 0 18px;
+      }
+
+      .phone {
+        align-self: end;
+        justify-self: end;
+        width: min(100%, 360px);
+        aspect-ratio: 9 / 16;
+        border: 10px solid #1d2723;
+        border-radius: 34px;
+        background: #f9fbf8;
+        box-shadow: var(--shadow);
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+        overflow: hidden;
+        transform-origin: 50% 100%;
+        animation: phoneFloat 5s ease-in-out infinite;
+      }
+
+      .phone-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.78rem;
+        font-weight: 760;
+      }
+
+      .phone-screen-title {
+        font-size: 1.45rem;
+        line-height: 1.05;
+        font-weight: 850;
+      }
+
+      .phone-list {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+
+      .phone-row {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        display: grid;
+        gap: 8px;
+        animation: riseIn 280ms ease both;
+      }
+
+      .phone-row:nth-child(2) {
+        animation-delay: 60ms;
+      }
+
+      .phone-row:nth-child(3) {
+        animation-delay: 120ms;
+      }
+
+      .phone-row strong {
+        font-size: 0.95rem;
+      }
+
+      .phone-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .unknown {
+        width: fit-content;
+        border-radius: 999px;
+        background: var(--blue);
+        color: #23556f;
+        padding: 4px 8px;
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+        gap: 24px;
+        padding-top: 28px;
+      }
+
+      .scene-panel,
+      .side-panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(28, 51, 42, 0.06);
+      }
+
+      .scene-panel {
+        padding: 26px;
+        min-height: 520px;
+      }
+
+      .scene-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: start;
+        margin-bottom: 22px;
+      }
+
+      .scene-head h3 {
+        font-size: clamp(1.8rem, 3vw, 3.1rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .stage {
+        border-radius: 999px;
+        background: var(--amber);
+        color: #4a3212;
+        padding: 8px 12px;
+        font-weight: 850;
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+
+      .scene-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 0.86fr);
+        gap: 22px;
+      }
+
+      .walk-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        background: #fbfdfb;
+      }
+
+      .walk-card h4 {
+        margin: 0 0 10px;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .walk-card p,
+      .walk-card li {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .walk-card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .demo-flow {
+        display: grid;
+        gap: 10px;
+      }
+
+      .flow-row {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        animation: riseIn 260ms ease both;
+      }
+
+      .flow-row:nth-child(2) {
+        animation-delay: 55ms;
+      }
+
+      .flow-row:nth-child(3) {
+        animation-delay: 110ms;
+      }
+
+      .flow-dot {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--mint);
+        color: var(--leaf);
+        font-weight: 850;
+      }
+
+      .side-panel {
+        padding: 20px;
+        display: grid;
+        align-content: start;
+        gap: 16px;
+      }
+
+      .metric-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fbfdfb;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.4rem;
+        line-height: 1;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .script-box {
+        border-left: 4px solid var(--leaf);
+        padding: 14px 16px;
+        background: #f3faf5;
+        border-radius: 0 14px 14px 0;
+        color: #30463d;
+        line-height: 1.5;
+        animation: glowIn 320ms ease both;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 10px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 58px minmax(0, 1fr);
+        gap: 10px;
+        font-size: 0.88rem;
+      }
+
+      .timecode {
+        font-weight: 850;
+        color: var(--clay);
+      }
+
+      .motion-strip {
+        height: 4px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--leaf), var(--amber), var(--clay), var(--leaf));
+        background-size: 220% 100%;
+        animation: moveStrip 4s linear infinite;
+      }
+
+      .tutorial-footer {
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.45;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes glowIn {
+        from {
+          opacity: 0.65;
+          box-shadow: inset 0 0 0 rgba(31, 122, 85, 0);
+        }
+        to {
+          opacity: 1;
+          box-shadow: inset 12px 0 24px rgba(31, 122, 85, 0.08);
+        }
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.06);
+        }
+      }
+
+      @keyframes phoneFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-0.4deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(0.4deg);
+        }
+      }
+
+      @keyframes moveStrip {
+        from {
+          background-position: 0% 50%;
+        }
+        to {
+          background-position: 220% 50%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .rail {
+          position: static;
+          height: auto;
+        }
+
+        .main {
+          padding: 22px;
+        }
+
+        .hero,
+        .content-grid,
+        .scene-body {
+          grid-template-columns: 1fr;
+        }
+
+        .phone {
+          justify-self: start;
+          max-height: 520px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .rail,
+        .main,
+        .scene-panel,
+        .side-panel {
+          padding: 18px;
+        }
+
+        .metric-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .scene-head {
+          display: grid;
+        }
+
+        .hero h2 {
+          font-size: 2.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="rail">
+        <div class="brand">
+          <div class="mark">T</div>
+          <div>
+            <h1>Thrifty walkthrough</h1>
+            <p class="subtitle">A guided tour for build reviews, launch prep, and video storyboarding.</p>
+          </div>
+        </div>
+
+        <div class="progress-wrap" aria-live="polite">
+          <div class="progress-copy">
+            <span id="progressText">Step 1 of 8</span>
+            <span id="progressPercent">13%</span>
+          </div>
+          <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+        </div>
+
+        <nav class="steps" id="stepList" aria-label="Walkthrough steps"></nav>
+
+        <div class="rail-actions">
+          <button class="small-action secondary" id="previousButton" type="button">Previous</button>
+          <button class="small-action" id="nextButton" type="button">Next</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="hero" aria-labelledby="heroTitle">
+          <div class="hero-copy">
+            <div>
+              <h2 id="heroTitle">Intercept the charge before it happens.</h2>
+              <p>
+                This walkthrough turns the Phase 1 MVP into a live story: passwordless sign-in,
+                honest unknowns, future events, alert timing, delivery evidence, and the exact
+                proof points a launch video needs.
+              </p>
+            </div>
+            <div class="hero-actions">
+              <button class="primary-action" id="copyNarrationButton" type="button">Copy narration</button>
+              <button class="ghost-action" id="tourButton" type="button" aria-pressed="false">
+                Start motion tour
+              </button>
+              <a
+                class="ghost-action"
+                href="./BUILD_FROM_START.html"
+                style="display: inline-grid; place-items: center; text-decoration: none"
+              >
+                Build guide
+              </a>
+              <button class="ghost-action" id="operatorToggle" type="button" aria-pressed="false">
+                Show operator notes
+              </button>
+            </div>
+          </div>
+
+          <div class="phone" aria-label="Mobile preview">
+            <div class="phone-top">
+              <span>9:41</span>
+              <span>Thrifty</span>
+            </div>
+            <div class="phone-screen-title" id="phoneTitle">Charges incoming</div>
+            <div class="phone-list" id="phoneList"></div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <article class="scene-panel">
+            <div class="scene-head">
+              <h3 id="sceneTitle">Build trust before asking for action.</h3>
+              <span class="stage" id="sceneStage">Scene 01</span>
+            </div>
+
+            <div class="scene-body">
+              <div class="demo-flow" id="demoFlow"></div>
+              <div class="walk-card">
+                <h4>Why it matters</h4>
+                <p id="whyText"></p>
+              </div>
+              <div class="walk-card">
+                <h4>Evidence to show</h4>
+                <ul id="evidenceList"></ul>
+              </div>
+              <div class="walk-card" id="operatorNotesCard" hidden>
+                <h4>Operator notes</h4>
+                <p id="operatorText"></p>
+              </div>
+            </div>
+          </article>
+
+          <aside class="side-panel">
+            <div class="motion-strip" aria-hidden="true"></div>
+            <div class="metric-strip">
+              <div class="metric">
+                <strong>26</strong>
+                <span>backend tests passing</span>
+              </div>
+              <div class="metric">
+                <strong>4</strong>
+                <span>alert lead times</span>
+              </div>
+              <div class="metric">
+                <strong>0</strong>
+                <span>password fields</span>
+              </div>
+            </div>
+
+            <div>
+              <h3>Launch narration</h3>
+              <p class="script-box" id="narrationText"></p>
+            </div>
+
+            <div>
+              <h3>Video shot list</h3>
+              <div class="timeline" id="timelineList"></div>
+            </div>
+          </aside>
+        </section>
+
+        <footer class="tutorial-footer">
+          Based on true events. Sadly.<br />
+          Canadian Kind, Scottish Strong.<br />
+          © 2024–2026 Lila Olufemi Abegunrin · Thrifty™ · Trademarks and Patents Pending
+          (CIPO) · REVOLUTIONISING LIFE SINCE 1982™
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      const scenes = [
+        {
+          title: "Build trust before asking for action.",
+          stage: "Scene 01",
+          kind: "Opening",
+          phoneTitle: "Sign in to Thrifty",
+          phoneRows: [
+            ["Email address", "Magic link only"],
+            ["No password", "No secret phrase"],
+            ["Session", "Issued after verified link"],
+          ],
+          flow: [
+            "The user enters an email address.",
+            "The backend issues a single-use magic link.",
+            "The app stores the session token after verification.",
+          ],
+          why: "The first promise is trust. Thrifty asks for the smallest possible credential and never trains the user to create another password.",
+          evidence: [
+            "POST /v1/auth/start returns accepted.",
+            "POST /v1/auth/verify returns a session token.",
+            "Consumed and expired links are rejected.",
+          ],
+          narration:
+            "Thrifty starts with a secure link, not another password. Sign in once, then let the app remember what might charge next.",
+          operator:
+            "Tests cover link creation, rate limiting, valid verification, expired links, consumed links, and rejection of unexpected secret fields.",
+          timecode: "0:00",
+        },
+        {
+          title: "Put future charges in the first viewport.",
+          stage: "Scene 02",
+          kind: "Primary view",
+          phoneTitle: "Charges incoming",
+          phoneRows: [
+            ["Spotify Family", "renews in 3 days"],
+            ["Design Tool Trial", "trial ends tomorrow"],
+            ["Cloud Storage", "amount unknown"],
+          ],
+          flow: [
+            "The app opens on upcoming events.",
+            "The list is sorted around what needs attention.",
+            "Past charges stay out of the primary experience.",
+          ],
+          why: "The product is offensive, not defensive. The screen exists to intercept money before it leaves, not explain what already went wrong.",
+          evidence: [
+            "Mobile list screen renders future events.",
+            "Subscription model stores next_event_at and next_event_kind.",
+            "No receipt-first primary route exists.",
+          ],
+          narration:
+            "The main screen is not a receipt drawer. It is a warning system for the next thing trying to charge you.",
+          operator:
+            "Keep any future history tab secondary and clearly labelled as past events. The launch video should never open on old charges.",
+          timecode: "0:08",
+        },
+        {
+          title: "Add a subscription without inventing missing facts.",
+          stage: "Scene 03",
+          kind: "Manual add",
+          phoneTitle: "Add a subscription",
+          phoneRows: [
+            ["Service name", "required"],
+            ["Amount", "optional"],
+            ["Next event", "optional"],
+          ],
+          flow: [
+            "The user records the service name.",
+            "Known amount, currency, cadence, and event time are saved.",
+            "Missing values remain unknown with a reason.",
+          ],
+          why: "Manual add must be fast, but honesty matters more than a tidy screen. Unknown data is an explicit state, not a blank to paper over.",
+          evidence: [
+            "POST /v1/subscriptions accepts partial known fields.",
+            "Unknown precision is preserved.",
+            "Mobile copy explains why a value is unknown.",
+          ],
+          narration:
+            "If Thrifty does not know the amount or deadline, it says so. No fake certainty, no made-up cancellation window.",
+          operator:
+            "The test suite proves a subscription can be created with only service_name and still returns a clear unknown state.",
+          timecode: "0:17",
+        },
+        {
+          title: "Sync platform sources into one durable list.",
+          stage: "Scene 04",
+          kind: "Persistence",
+          phoneTitle: "Still here after reinstall",
+          phoneRows: [
+            ["StoreKit", "Phase 2 source"],
+            ["Play Billing", "Phase 2 source"],
+            ["Manual", "Phase 1 source"],
+          ],
+          flow: [
+            "Each source normalises into one subscription model.",
+            "Records persist server-side by signed-in user.",
+            "Platform sync upserts by source product id.",
+          ],
+          why: "The app should not lose sight of a trial because a phone offloads an app. Server-side persistence is the safety net.",
+          evidence: [
+            "GET /v1/subscriptions returns the signed-in user's list.",
+            "Platform sync upserts on source and source_product_id.",
+            "Cross-session fetch is covered by tests.",
+          ],
+          narration:
+            "Delete the app, change phones, come back later: the list lives with the account, not with one fragile install.",
+          operator:
+            "Phase 2 native billing work should plug into the existing sync contract rather than creating a separate source model.",
+          timecode: "0:27",
+        },
+        {
+          title: "Schedule alerts before the charge.",
+          stage: "Scene 05",
+          kind: "Alert engine",
+          phoneTitle: "Alert schedule",
+          phoneRows: [
+            ["T-7 days", "scheduled"],
+            ["T-3 days", "scheduled"],
+            ["T-24 hours", "scheduled"],
+            ["T-2 hours", "scheduled"],
+          ],
+          flow: [
+            "The backend computes next_event_at.",
+            "Four lead-time alerts are created before the event.",
+            "Past lead times are skipped rather than backfilled.",
+          ],
+          why: "A reminder after the charge is a receipt. Thrifty's core value is the time window before the user loses money.",
+          evidence: [
+            "Alert engine creates four lead times.",
+            "Skipped past lead times are tested.",
+            "Deleted subscriptions cancel pending alerts.",
+          ],
+          narration:
+            "Thrifty does the boring timing maths for you: seven days, three days, one day, and two hours before it matters.",
+          operator:
+            "The scheduler can stay in-process for Phase 1. Move to a queue only when scale or delivery reliability demands it.",
+          timecode: "0:38",
+        },
+        {
+          title: "Log delivery honestly.",
+          stage: "Scene 06",
+          kind: "Notifications",
+          phoneTitle: "Notification fallback",
+          phoneRows: [
+            ["Push token", "registered"],
+            ["Local alert", "fallback"],
+            ["No token", "logged"],
+          ],
+          flow: [
+            "Mobile registers a platform notification token.",
+            "The backend attempts push delivery.",
+            "Every delivery result records an outcome and reason.",
+          ],
+          why: "A serious alert product needs evidence. Delivery logs make missed notifications diagnosable instead of mysterious.",
+          evidence: [
+            "POST /v1/notifications/token stores active tokens.",
+            "Delivery logs include skipped_no_token.",
+            "Local notification fallback is typechecked.",
+          ],
+          narration:
+            "When a warning goes out, Thrifty records what happened. Delivered, failed, or skipped: the system keeps the receipt for the reminder.",
+          operator:
+            "APNs and FCM credentials are deployment inputs. Local tests cover the behaviour without needing live provider keys.",
+          timecode: "0:50",
+        },
+        {
+          title: "Prove the build, then show the proof.",
+          stage: "Scene 07",
+          kind: "Quality gate",
+          phoneTitle: "Build proof",
+          phoneRows: [
+            ["Pytest", "26 passing"],
+            ["Tutorial JSON", "valid"],
+            ["Health", "db ok"],
+          ],
+          flow: [
+            "Backend format, lint, compile, tests, and migration SQL pass.",
+            "Tutorial context and copy guard pass.",
+            "Docker health confirms API and database readiness.",
+          ],
+          why: "A launch walkthrough should not rely on vibes. It should show the exact proof that the build is alive.",
+          evidence: [
+            "./scripts/test_all.sh runs the full local gate.",
+            "GET /health returns status ok, db ok, version 1.0.0.",
+            "Docker compose starts and shuts down cleanly.",
+          ],
+          narration:
+            "Before this becomes a launch story, it has to be a working system. The test runner gives one clean proof path.",
+          operator:
+            "The tutorial proof path avoids adding an application build system. Any mobile-tooling checks should stay isolated until the mobile architecture is final.",
+          timecode: "1:03",
+        },
+        {
+          title: "Turn the walkthrough into the launch video.",
+          stage: "Scene 08",
+          kind: "Video handoff",
+          phoneTitle: "Launch cut",
+          phoneRows: [
+            ["Hook", "intercept before charge"],
+            ["Demo", "future event flow"],
+            ["Proof", "tests and health"],
+          ],
+          flow: [
+            "Use each step as a launch-video scene.",
+            "Pair mobile UI close-ups with backend proof moments.",
+            "End on the product promise, not a feature list.",
+          ],
+          why: "The best launch video will feel like a guided rescue, not a product tour. The walkthrough gives the video structure and timing.",
+          evidence: [
+            "Video context lives in tutorial/remotion-context.json.",
+            "Scene narration is copyable from this page.",
+            "The story maps directly to product proof.",
+          ],
+          narration:
+            "This is the launch spine: problem, interception, honest unknowns, alerts, proof, and a crisp reason to install.",
+          operator:
+            "Create any render-specific project outside this repo so Thrifty's application workspace stays clean.",
+          timecode: "1:15",
+        },
+      ];
+
+      let current = 0;
+      let showOperator = false;
+      let tourTimer = null;
+
+      const stepList = document.getElementById("stepList");
+      const progressText = document.getElementById("progressText");
+      const progressPercent = document.getElementById("progressPercent");
+      const progressBar = document.getElementById("progressBar");
+      const sceneTitle = document.getElementById("sceneTitle");
+      const sceneStage = document.getElementById("sceneStage");
+      const demoFlow = document.getElementById("demoFlow");
+      const whyText = document.getElementById("whyText");
+      const evidenceList = document.getElementById("evidenceList");
+      const narrationText = document.getElementById("narrationText");
+      const operatorText = document.getElementById("operatorText");
+      const operatorNotesCard = document.getElementById("operatorNotesCard");
+      const operatorToggle = document.getElementById("operatorToggle");
+      const tourButton = document.getElementById("tourButton");
+      const phoneTitle = document.getElementById("phoneTitle");
+      const phoneList = document.getElementById("phoneList");
+      const timelineList = document.getElementById("timelineList");
+
+      function renderStepList() {
+        stepList.innerHTML = "";
+        scenes.forEach((scene, index) => {
+          const button = document.createElement("button");
+          button.className = `step-button${index === current ? " active" : ""}`;
+          button.type = "button";
+          button.setAttribute("aria-current", index === current ? "step" : "false");
+          button.innerHTML = `
+            <span class="step-number">${index + 1}</span>
+            <span>
+              <span class="step-title">${scene.title}</span>
+              <span class="step-kind">${scene.kind}</span>
+            </span>
+          `;
+          button.addEventListener("click", () => {
+            current = index;
+            render();
+          });
+          stepList.appendChild(button);
+        });
+      }
+
+      function renderFlow(scene) {
+        demoFlow.innerHTML = "";
+        scene.flow.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className = "flow-row";
+          row.innerHTML = `
+            <span class="flow-dot">${index + 1}</span>
+            <div class="walk-card"><p>${item}</p></div>
+          `;
+          demoFlow.appendChild(row);
+        });
+      }
+
+      function renderEvidence(scene) {
+        evidenceList.innerHTML = "";
+        scene.evidence.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          evidenceList.appendChild(li);
+        });
+      }
+
+      function renderPhone(scene) {
+        phoneTitle.textContent = scene.phoneTitle;
+        phoneList.innerHTML = "";
+        scene.phoneRows.forEach(([title, meta], index) => {
+          const row = document.createElement("div");
+          row.className = "phone-row";
+          const unknown = meta.toLowerCase().includes("unknown")
+            ? '<span class="unknown">unknown</span>'
+            : "";
+          row.innerHTML = `
+            <strong>${title}</strong>
+            <div class="phone-meta"><span>${meta}</span><span>${index + 1}</span></div>
+            ${unknown}
+          `;
+          phoneList.appendChild(row);
+        });
+      }
+
+      function renderTimeline() {
+        timelineList.innerHTML = "";
+        scenes.forEach((scene, index) => {
+          const item = document.createElement("div");
+          item.className = "timeline-item";
+          item.innerHTML = `
+            <span class="timecode">${scene.timecode}</span>
+            <span>${index + 1}. ${scene.kind}</span>
+          `;
+          timelineList.appendChild(item);
+        });
+      }
+
+      function render() {
+        const scene = scenes[current];
+        const percent = Math.round(((current + 1) / scenes.length) * 100);
+        progressText.textContent = `Step ${current + 1} of ${scenes.length}`;
+        progressPercent.textContent = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
+        sceneTitle.textContent = scene.title;
+        sceneStage.textContent = scene.stage;
+        whyText.textContent = scene.why;
+        narrationText.textContent = scene.narration;
+        operatorText.textContent = scene.operator;
+        operatorNotesCard.hidden = !showOperator;
+        operatorToggle.textContent = showOperator ? "Hide operator notes" : "Show operator notes";
+        operatorToggle.setAttribute("aria-pressed", String(showOperator));
+        tourButton.textContent = tourTimer ? "Pause motion tour" : "Start motion tour";
+        tourButton.setAttribute("aria-pressed", String(Boolean(tourTimer)));
+        renderStepList();
+        renderFlow(scene);
+        renderEvidence(scene);
+        renderPhone(scene);
+        renderTimeline();
+      }
+
+      document.getElementById("previousButton").addEventListener("click", () => {
+        current = (current - 1 + scenes.length) % scenes.length;
+        render();
+      });
+
+      document.getElementById("nextButton").addEventListener("click", () => {
+        current = (current + 1) % scenes.length;
+        render();
+      });
+
+      operatorToggle.addEventListener("click", () => {
+        showOperator = !showOperator;
+        render();
+      });
+
+      tourButton.addEventListener("click", () => {
+        if (tourTimer) {
+          clearInterval(tourTimer);
+          tourTimer = null;
+          render();
+          return;
+        }
+        tourTimer = setInterval(() => {
+          current = (current + 1) % scenes.length;
+          render();
+        }, 3200);
+        render();
+      });
+
+      document.getElementById("copyNarrationButton").addEventListener("click", async () => {
+        const script = scenes.map((scene) => `${scene.timecode} ${scene.narration}`).join("\n");
+        await navigator.clipboard.writeText(script);
+        narrationText.textContent = "Narration copied. Paste it into the launch script or video notes.";
+        setTimeout(() => {
+          narrationText.textContent = scenes[current].narration;
+        }, 1800);
+      });
+
+      render();
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
 **Tagline:** I may be thrifty, but I'm not frugal.
 **Founder:** Lila Olufemi Abegunrin
 **Markets:** UK, Canada, Australia, Europe, Africa (NOT US-centric)
-**Platforms:** iOS + Android (React Native)
+**Platforms:** iOS native (SwiftUI) + Android native (Kotlin/Compose)
 **Backend:** Python (FastAPI). Node.js banned.
 **Auth:** Passwordless only.
 **Language:** British/Scottish English throughout. Zero Americanisms.
@@ -38,7 +38,7 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 
 ## 6. In Scope (v1)
 
-- iOS + Android (React Native shell, native modules where required)
+- iOS + Android native clients
 - Python backend (FastAPI)
 - Passwordless authentication (magic link via email — see §13 Decisions)
 - Proactive alerts before renewals and trial-to-paid conversions
@@ -76,7 +76,7 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 
 | ID | Requirement |
 |---|---|
-| NFR1 | Backend is Python only (FastAPI). Node.js banned. |
+| NFR1 | Backend is Python only (FastAPI). Native mobile clients only. Node.js banned. |
 | NFR2 | Passwordless only. No password storage anywhere. |
 | NFR3 | Alert delivery SLO: 99% of scheduled alerts delivered within ±60 seconds of scheduled time, no later than 1 hour before event |
 | NFR4 | Multi-currency (ISO 4217), multi-region (IANA timezones) |

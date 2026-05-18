@@ -1,65 +1,46 @@
-# Thrifty — Claude Code Handoff Package
+# Thrifty — Build Handoff
 
-This package contains everything Claude Code needs to build Thrifty Phase 1 end-to-end in a single command, using parallel sub-agents.
+Thrifty is being rebuilt contract-first:
 
-## What's Inside
+- Python 3.12 FastAPI backend first.
+- Native iOS client after the API contract is proven.
+- Native Android client after iOS and backend flows are stable.
+- No package-manager app stack inside this repo.
 
-```
-thrifty/
-├── README.md                       # this file
-├── docs/
-│   ├── 01-PRD.md                   # locked product requirements
-│   ├── 02-ARCHITECTURE.md          # locked system design
-│   ├── 03-DATA-MODEL.md            # Postgres schema
-│   ├── 04-API-CONTRACT.md          # full v1 API spec
-│   └── 05-BACKLOG.md               # epics, stories, tasks
-├── .claude/
-│   └── commands/
-│       └── goal.md                 # /goal slash command — orchestrates the build
-└── agents/
-    ├── backend-architect.md        # FastAPI + Postgres + alert engine
-    ├── mobile-architect.md         # React Native + push + sign-in
-    ├── devops-architect.md         # Docker + CI + Fly.io
-    ├── qa-architect.md             # pytest suite
-    └── content-architect.md        # British/Scottish copy
+## Start Here
+
+Open:
+
+```text
+BUILD_FROM_START.html
 ```
 
-## Activation (in GitHub Codespaces)
+That walkthrough explains the build order, what Codex does, what you provide, and what proof shows each step worked.
 
-1. Unzip into your Codespace repo root.
-2. Move `agents/` contents to `.claude/agents/` (Claude Code's standard location):
+For the product demo and launch story, open:
+
+```text
+OPEN_TUTORIAL.html
+```
+
+## Current Proof Command
 
 ```bash
-mkdir -p .claude/agents
-mv agents/*.md .claude/agents/
+./scripts/test_all.sh
 ```
 
-3. Open Claude Code in the Codespace terminal.
-4. Run:
+This checks backend formatting, backend tests, migration SQL generation, tutorial context, copy lint, Docker startup, and `/health`.
 
-```
-/goal
-```
+## Useful Files
 
-That's it. The build runs all five sub-agents in parallel, scaffolds backend + mobile + infra + tests + copy, runs the test suite, and prints the deploy command.
-
-## What Gets Built
-
-- Python 3.12 FastAPI backend with Postgres, magic-link auth, alert engine, APNs/FCM dispatcher
-- React Native (Expo) mobile app for iOS + Android
-- docker-compose for local dev
-- GitHub Actions CI with banned-words and no-passwords linters
-- Fly.io deploy config
-- Full pytest suite with ≥ 85% coverage
-- All copy in British/Scottish English
-
-## Phase Override
-
-```
-/goal 2    # Phase 2: StoreKit + Play Billing ingestion
-/goal 3    # Phase 3: Plaid + monetisation
-/goal 4    # Phase 4: hardening
-```
+| File | Purpose |
+|---|---|
+| `AGENTS.md` | Active agent rules, sprint map, and verification gates. |
+| `BUILD_FROM_START.html` | Interactive build walkthrough from the first brick. |
+| `OPEN_TUTORIAL.html` | Interactive product and launch walkthrough. |
+| `docs/08-BUILD-FROM-START.md` | Text version of the build path. |
+| `docs/09-COPY-DECK.md` | Preserved product copy. |
+| `backend/` | FastAPI backend. |
 
 ---
 

@@ -142,7 +142,7 @@ Given canonical fields `{amount, currency, cadence, next_event_at, next_event_ki
 
 ## Acceptance
 
-- File compiles under strict TypeScript
+- Copy is preserved in `docs/09-COPY-DECK.md` and passes `python scripts/lint_copy.py`
 - No banned words present
 - All strings use British/Scottish spellings
 - No string makes a definite claim about a value that could be NULL

@@ -26,23 +26,6 @@ jobs:
       - name: Tests
         run: uv run pytest -v
 
-  mobile:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: mobile/package-lock.json
-      - name: Install mobile build tooling
-        run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: TypeScript
-        run: npx tsc --noEmit
-
   copy-lint:
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +52,7 @@ jobs:
           for path in Path(".").rglob("*"):
               if path.suffix not in {".py", ".ts", ".tsx"}:
                   continue
-              if any(part in {".git", ".venv", "node_modules"} for part in path.parts):
+              if any(part in {".git", ".venv"} for part in path.parts):
                   continue
               if needle in path.read_text(errors="ignore").lower():
                   bad.append(str(path))
