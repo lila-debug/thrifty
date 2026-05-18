@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "gethealthapiavailability",
+    "description": "Verify that GET /health returns 200 with status, db, and version fields when the API and database are healthy."
+  },
+  {
+    "id": "TC002",
+    "title": "postv1authstartmagiclinkissuance",
+    "description": "Verify that POST /v1/auth/start with a valid email returns 202 accepted and issues a magic link."
+  },
+  {
+    "id": "TC003",
+    "title": "postv1authverifytokenvalidation",
+    "description": "Verify that POST /v1/auth/verify with a valid token returns 200 with session_token and user profile."
+  },
+  {
+    "id": "TC004",
+    "title": "postv1authlogoutsessiontermination",
+    "description": "Verify that POST /v1/auth/logout with an active session returns 204 and ends the session."
+  },
+  {
+    "id": "TC005",
+    "title": "postv1subscriptionscreatesubscription",
+    "description": "Verify that POST /v1/subscriptions with valid session token and required fields creates a subscription and returns 201."
+  },
+  {
+    "id": "TC006",
+    "title": "getv1subscriptionslistsubscriptions",
+    "description": "Verify that GET /v1/subscriptions with a valid session token returns 200 with the user's subscriptions list."
+  },
+  {
+    "id": "TC007",
+    "title": "patchv1subscriptionsupdatesubscription",
+    "description": "Verify that PATCH /v1/subscriptions/{subscription_id} with valid session token updates owned subscription and returns 200 with updated data."
+  },
+  {
+    "id": "TC008",
+    "title": "deletev1subscriptionsdeletesubscription",
+    "description": "Verify that DELETE /v1/subscriptions/{subscription_id} with valid session token soft deletes the subscription and returns 204."
+  },
+  {
+    "id": "TC009",
+    "title": "getv1alertslistalerts",
+    "description": "Verify that GET /v1/alerts with valid session token returns 200 with the user's scheduled alerts."
+  },
+  {
+    "id": "TC010",
+    "title": "postv1notificationsregistertoken",
+    "description": "Verify that POST /v1/notifications/token with valid session token and valid platform registers a push notification token and returns 201."
+  }
+]

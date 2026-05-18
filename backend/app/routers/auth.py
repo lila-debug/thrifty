@@ -7,9 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings, get_settings
 from app.db import get_session
+from app.deps import CurrentUserDep
 from app.schemas.auth import (
     AuthStartRequest,
     AuthStartResponse,
+    AuthTestTokenRequest,
+    AuthTestTokenResponse,
     AuthUser,
     AuthVerifyRequest,
     AuthVerifyResponse,
@@ -19,6 +22,8 @@ from app.services.magic_link import (
     LinkInvalid,
     TooManyLinksRequested,
     issue_magic_link,
+    last_issued_token,
+    utc_now,
     verify_magic_link,
 )
 
@@ -65,6 +70,29 @@ async def verify_auth(
     )
 
 
+@router.post("/test-token", response_model=AuthTestTokenResponse)
+async def test_token(
+    payload: AuthTestTokenRequest,
+    settings: SettingsDep,
+) -> AuthTestTokenResponse:
+    allowed_envs = {"development", "local", "test"}
+    if not settings.enable_test_auth_tokens or settings.app_env not in allowed_envs:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found.")
+    try:
+        token = last_issued_token(payload.email)
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Request a sign-in link first.",
+        ) from exc
+    return AuthTestTokenResponse(token=token)
+
+
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
-async def logout() -> Response:
+async def logout(
+    user: CurrentUserDep,
+    session: SessionDep,
+) -> Response:
+    user.session_revoked_after = utc_now()
+    await session.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)

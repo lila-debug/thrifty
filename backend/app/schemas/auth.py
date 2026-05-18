@@ -28,3 +28,13 @@ class AuthUser(BaseModel):
 class AuthVerifyResponse(BaseModel):
     session_token: str
     user: AuthUser
+
+
+class AuthTestTokenRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    email: EmailStr
+
+
+class AuthTestTokenResponse(BaseModel):
+    token: str

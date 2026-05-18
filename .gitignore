@@ -13,3 +13,5 @@ build/
 .expo/
 coverage/
 *.log
+testsprite_tests/tmp/
+testsprite_tests/*.html

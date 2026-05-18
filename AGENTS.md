@@ -8,6 +8,7 @@ This file is the working guide for any agent building or reviewing Thrifty. It k
 - Keep the backend Python 3.12 and FastAPI. Do not add Node.js, npm, npx, pnpm, yarn, a JavaScript server, or a JavaScript application build workflow.
 - Keep auth passwordless. Do not add password fields, password storage, or password reset flows.
 - Never invent subscription facts. Unknown amount, event time, cancel-by time, or terms stay null server-side and render as "unknown" with a reason.
+- Treat StoreKit, Google Play Billing, and RevenueCat as monetisation infrastructure for Thrifty Plus, not as a way to discover every third-party subscription on a user's device.
 - Use British/Scottish English in comments, copy, docs, errors, and commit messages.
 - Do not reference sibling brands anywhere in the repo.
 
@@ -26,8 +27,8 @@ Ship the Phase 1 MVP as a usable local application:
 | THR-E1 Foundations | Python API, Postgres schema, passwordless auth | Built |
 | THR-E2 Manual Add And Persistence | Manual subscription CRUD, sync contract, cross-device persistence | Built |
 | THR-E3 Proactive Alerts | T-7d, T-3d, T-24h, T-2h alerts, notification logs, unknown handling | Built |
-| THR-E4 StoreKit Ingestion | Native iOS billing ingestion | Stubbed for Phase 2 |
-| THR-E5 Play Billing Ingestion | Native Android billing ingestion | Stubbed for Phase 2 |
+| THR-E4 StoreKit Billing | Native iOS Thrifty Plus purchases and entitlement sync | Deferred to Phase 3 |
+| THR-E5 Play Billing | Native Android Thrifty Plus purchases and entitlement sync | Deferred to Phase 3 |
 | THR-E6 Plain-English Translation | Template-based explanations from known fields | Started |
 | THR-E7 Plaid Monitoring | Bank-side recurring detection | Deferred to Phase 3 |
 | THR-E8 Monetisation | Thrifty Plus and app-store billing | Deferred to Phase 3 |
@@ -48,6 +49,7 @@ Ship the Phase 1 MVP as a usable local application:
 | THR-S12 Walkthrough and launch context | Keep an animated interactive product tutorial and launch-video outline | `OPEN_TUTORIAL.html`, `tutorial/remotion-context.json`, `docs/07-TUTORIAL-AND-LAUNCH-VIDEO.md` |
 | THR-S13 Build from start guide | Keep a no-package-manager rebuild walkthrough and exact handoff checklist | `BUILD_FROM_START.html`, `docs/08-BUILD-FROM-START.md` |
 | THR-S14 Copy deck | Preserve product copy while removing legacy mobile scaffolding | `docs/09-COPY-DECK.md` |
+| THR-S15 Decision log | Keep current platform, billing, deployment, QA, and App Intents decisions visible | `docs/11-DECISION-LOG.md` |
 
 ## Verification Gates
 

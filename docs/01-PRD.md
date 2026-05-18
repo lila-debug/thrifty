@@ -42,8 +42,8 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 - Python backend (FastAPI)
 - Passwordless authentication (magic link via email — see §13 Decisions)
 - Proactive alerts before renewals and trial-to-paid conversions
-- StoreKit ingestion (iOS)
-- Play Billing ingestion (Android)
+- StoreKit billing for Thrifty Plus (iOS)
+- Play Billing for Thrifty Plus (Android)
 - Manual add (always available)
 - Persistence across app deletion, offload, and device change
 - Plain-English translation of known subscription fields
@@ -61,8 +61,8 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 
 | ID | Requirement |
 |---|---|
-| FR1 | StoreKit ingestion: detect iOS subscriptions and trials, including renewal/conversion times and price where available |
-| FR2 | Play Billing ingestion: detect Android subscriptions and trials, including renewal/conversion times and price where available |
+| FR1 | Manual add: capture known subscriptions and trials without inventing unknown values |
+| FR2 | Thrifty Plus billing: use StoreKit on iOS and Play Billing on Android for Thrifty's own paid plan |
 | FR3 | Plaid ingestion (Phase 3): detect subscription-like merchants not visible via store billing; label uncertainty |
 | FR4 | Manual add: user can add any subscription or trial with amount, currency, cadence, next event datetime, notes |
 | FR5 | Normalisation: unify all sources into one canonical Subscription model; dedupe on (provider, product_id, user_id) |
@@ -112,7 +112,7 @@ Canonical entities: `users`, `auth_identities`, `subscriptions`, `alerts`, `noti
 | Q3 Notification model | **Hybrid**: backend schedules push (APNs/FCM); mobile sets local notifications as fallback for offline state. |
 | Q4 Plaid in MVP | **No.** Phase 3. |
 | Q5 Translation source | Template-based from canonical fields. **No LLM at runtime in v1.** Terms text ingested as-is from platform APIs; no invention. |
-| Q6 Monetisation | **Freemium**: free tier covers manual add + 3 auto-detected subs; paid tier (Thrifty Plus) unlimited at £2.49/month or equivalent local. App Store/Play IAP only. No ads. |
+| Q6 Monetisation | **Freemium**: free tier covers manual add and core reminders; paid tier (Thrifty Plus) uses app-store billing. RevenueCat is the preferred cross-platform entitlement layer when monetisation enters scope. No ads. |
 | Q7 Historical charges | **Disallowed in primary view.** Secondary "History" tab in Phase 4, read-only, clearly labelled past events. |
 
 ## 14. Risks

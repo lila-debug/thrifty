@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Annotated
 
 import jwt
@@ -15,6 +16,12 @@ bearer = HTTPBearer(auto_error=False)
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 BearerDep = Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]
+
+
+def as_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
 
 
 async def current_user(
@@ -38,6 +45,19 @@ async def current_user(
     user = await session.get(User, user_id)
     if user is None or user.deleted_at is not None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session invalid.")
+    issued_at = payload.get("iat")
+    if user.session_revoked_after is not None:
+        if not isinstance(issued_at, int):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Session invalid.",
+            )
+        issued_at_datetime = datetime.fromtimestamp(issued_at, UTC)
+        if issued_at_datetime <= as_utc(user.session_revoked_after):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Session invalid. Sign in again.",
+            )
     return user
 
 

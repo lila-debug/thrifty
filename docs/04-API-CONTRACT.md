@@ -19,7 +19,16 @@ All timestamps: ISO 8601 with timezone.
 **Errors:** 401 invalid/expired, 410 already consumed.
 
 ### `POST /v1/auth/logout`
+**Auth:** required.
 **Response 204.**
+**Effect:** revokes the current session token server-side; the client must discard the token.
+
+### `POST /v1/auth/test-token`
+**Local/test only. Hidden unless `ENABLE_TEST_AUTH_TOKENS=true` and `APP_ENV` is `development`, `local`, or `test`.**
+**Body:** `{ "email": "user@example.com" }`
+**Response 200:** `{ "token": "single-use-magic-link-token" }`
+**Errors:** 404 when disabled or when no link has been issued.
+**Effect:** lets external harnesses and simulators complete passwordless sign-in without weakening production auth.
 
 ## Subscriptions
 

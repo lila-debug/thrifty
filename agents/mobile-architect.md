@@ -18,7 +18,7 @@ Build a SwiftUI client against the FastAPI contract:
 5. Subscription detail screen.
 6. Push token registration.
 7. Local notification fallback.
-8. StoreKit ingestion in Phase 2.
+8. StoreKit/RevenueCat billing for Thrifty Plus in Phase 3.
 
 ## Android Second Slice
 
@@ -27,7 +27,7 @@ Build the Android client after the iOS flow and backend contract are stable:
 1. Compose app shell.
 2. Same auth and subscription API contract.
 3. Push token registration through Firebase.
-4. Play Billing ingestion in Phase 2.
+4. Play Billing/RevenueCat billing for Thrifty Plus in Phase 3.
 
 ## Guardrails
 

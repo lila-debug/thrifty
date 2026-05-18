@@ -27,7 +27,9 @@ services:
         condition: service_healthy
     environment:
       APP_BASE_URL: http://localhost:8000
+      APP_ENV: local
       DATABASE_URL: postgresql+asyncpg://thrifty:thrifty@postgres:5432/thrifty
+      ENABLE_TEST_AUTH_TOKENS: "true"
       LOG_LEVEL: INFO
       SESSION_SECRET: change-me-for-local-development-only
     healthcheck:

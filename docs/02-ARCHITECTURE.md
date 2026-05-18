@@ -24,6 +24,7 @@ Define the allowed system shape. Prevent tool sprawl. Enforce Python-only backen
 2. Never invent values. Unknown fields stored as NULL and rendered as "unknown" with reason.
 3. All copy is British/Scottish English. Banned words enforced via CI lint.
 4. Python only on backend and native mobile clients only. Any PR introducing Node.js fails CI.
+5. StoreKit, Google Play Billing, and RevenueCat are for Thrifty Plus monetisation, not broad discovery of third-party subscriptions. Third-party subscription discovery remains manual add first, then bank/email/provider integrations.
 5. No passwords. Any PR introducing a password field fails CI.
 
 ## Data Flow

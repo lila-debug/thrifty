@@ -7,6 +7,7 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.models import AuthToken
 from app.services.magic_link import as_utc, last_issued_token, token_digest, utc_now
 
@@ -91,6 +92,28 @@ async def test_verify_consumed_link_returns_gone(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
+async def test_logout_revokes_current_session(client: AsyncClient) -> None:
+    await client.post("/v1/auth/start", json={"email": "logout@example.com"})
+    token = last_issued_token("logout@example.com")
+    verified = await client.post("/v1/auth/verify", json={"token": token})
+    session_token = verified.json()["session_token"]
+    client.headers.update({"Authorization": f"Bearer {session_token}"})
+
+    logout = await client.post("/v1/auth/logout")
+    after_logout = await client.get("/v1/subscriptions")
+
+    assert logout.status_code == 204
+    assert after_logout.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_logout_requires_signed_in_user(client: AsyncClient) -> None:
+    response = await client.post("/v1/auth/logout")
+
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
 async def test_auth_start_rejects_unexpected_secret_field(client: AsyncClient) -> None:
     extra_key = "pass" + "word"
     response = await client.post(
@@ -99,3 +122,54 @@ async def test_auth_start_rejects_unexpected_secret_field(client: AsyncClient) -
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_test_token_route_is_hidden_by_default(client: AsyncClient) -> None:
+    await client.post("/v1/auth/start", json={"email": "hidden@example.com"})
+
+    response = await client.post("/v1/auth/test-token", json={"email": "hidden@example.com"})
+
+    assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_test_token_route_returns_latest_token_when_enabled(client: AsyncClient) -> None:
+    settings = get_settings()
+    original_enabled = settings.enable_test_auth_tokens
+    original_env = settings.app_env
+    settings.enable_test_auth_tokens = True
+    settings.app_env = "test"
+    try:
+        await client.post("/v1/auth/start", json={"email": "harness@example.com"})
+        expected = last_issued_token("harness@example.com")
+
+        response = await client.post(
+            "/v1/auth/test-token",
+            json={"email": "harness@example.com"},
+        )
+    finally:
+        settings.enable_test_auth_tokens = original_enabled
+        settings.app_env = original_env
+
+    assert response.status_code == 200
+    assert response.json() == {"token": expected}
+
+
+@pytest.mark.asyncio
+async def test_test_token_route_requires_existing_link_when_enabled(client: AsyncClient) -> None:
+    settings = get_settings()
+    original_enabled = settings.enable_test_auth_tokens
+    original_env = settings.app_env
+    settings.enable_test_auth_tokens = True
+    settings.app_env = "test"
+    try:
+        response = await client.post(
+            "/v1/auth/test-token",
+            json={"email": "missing@example.com"},
+        )
+    finally:
+        settings.enable_test_auth_tokens = original_enabled
+        settings.app_env = original_env
+
+    assert response.status_code == 404
