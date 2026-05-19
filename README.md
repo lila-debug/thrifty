@@ -32,6 +32,14 @@ OPEN_TUTORIAL.html
 This checks backend formatting, backend tests, migration SQL generation, tutorial context, copy lint, Docker startup, and `/health`.
 It also validates the interactive tutorial files with a Python-only script. No Node.js, npm, or npx is part of the required proof path.
 
+To prove the native iOS shell separately:
+
+```bash
+./scripts/test_ios.sh
+```
+
+That builds Thrifty for an iPhone simulator and an iPad simulator using Xcode. It does not add Node.js or any package-manager app stack.
+
 ## Useful Files
 
 | File | Purpose |
@@ -43,6 +51,7 @@ It also validates the interactive tutorial files with a Python-only script. No N
 | `docs/09-COPY-DECK.md` | Preserved product copy. |
 | `docs/10-NO-NODE-QA.md` | Required QA plan without Node.js tooling. |
 | `backend/` | FastAPI backend. |
+| `ios/Thrifty/` | Native SwiftUI iPhone and iPad app. |
 
 ---
 
