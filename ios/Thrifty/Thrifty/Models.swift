@@ -85,7 +85,7 @@ struct Subscription: Decodable, Identifiable, Hashable {
     let precision: String
     let cancelByAt: Date?
     let cancelUrl: String?
-    let termsPlain: String?
+    let termsEnglish: String?
     let notes: String?
 
     enum CodingKeys: String, CodingKey {
@@ -103,7 +103,7 @@ struct Subscription: Decodable, Identifiable, Hashable {
         case precision
         case cancelByAt = "cancel_by_at"
         case cancelUrl = "cancel_url"
-        case termsPlain = "terms_plain"
+        case termsEnglish = "terms_english"
         case notes
     }
 
@@ -124,7 +124,7 @@ struct Subscription: Decodable, Identifiable, Hashable {
         precision = try container.decode(String.self, forKey: .precision)
         cancelByAt = try container.decodeIfPresent(Date.self, forKey: .cancelByAt)
         cancelUrl = try container.decodeIfPresent(String.self, forKey: .cancelUrl)
-        termsPlain = try container.decodeIfPresent(String.self, forKey: .termsPlain)
+        termsEnglish = try container.decodeIfPresent(String.self, forKey: .termsEnglish)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
     }
 

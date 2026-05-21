@@ -51,7 +51,7 @@ All timestamps: ISO 8601 with timezone.
       "precision": "exact",
       "cancel_by_at": null,
       "cancel_url": "https://netflix.com/cancel",
-      "terms_plain": "Renews monthly at £10.99. Cancel any time from Netflix account settings.",
+      "terms_english": "Renews monthly at £10.99. Cancel any time from Netflix account settings.",
       "notes": null
     }
   ]

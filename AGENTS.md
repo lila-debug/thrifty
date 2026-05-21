@@ -29,7 +29,7 @@ Ship the Phase 1 MVP as a usable local application:
 | THR-E3 Proactive Alerts | T-7d, T-3d, T-24h, T-2h alerts, notification logs, unknown handling | Built |
 | THR-E4 StoreKit Billing | Native iOS Thrifty Plus purchases and entitlement sync | Deferred to Phase 3 |
 | THR-E5 Play Billing | Native Android Thrifty Plus purchases and entitlement sync | Deferred to Phase 3 |
-| THR-E6 Plain-English Translation | Template-based explanations from known fields | Started |
+| THR-E6 English Translation | Template-based explanations from known fields | Started |
 | THR-E7 Plaid Monitoring | Bank-side recurring detection | Deferred to Phase 3 |
 | THR-E8 Monetisation | Thrifty Plus and app-store billing | Deferred to Phase 3 |
 | THR-E9 Hardening | Privacy, audit, passkeys, history, scale work | Deferred to Phase 4 |

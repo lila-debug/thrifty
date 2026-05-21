@@ -12,7 +12,7 @@
     "Normalise subscription data from manual entry and platform sync into one canonical server-side list.",
     "Compute proactive alert timings and support alert recomputation for subscriptions.",
     "Register and deactivate push notification tokens for iOS and Android.",
-    "Return honest, plain-language subscription details without inventing unknown values."
+    "Return honest, English subscription details without inventing unknown values."
   ],
   "features": [
     {
@@ -207,7 +207,7 @@
                 "cancel_by_at": "datetime optional",
                 "cancel_url": "string optional",
                 "terms_raw": "string optional",
-                "terms_plain": "string optional",
+                "terms_english": "string optional",
                 "notes": "string optional"
               }
             },
@@ -237,7 +237,7 @@
                 "cancel_by_at": "datetime optional",
                 "cancel_url": "string optional",
                 "terms_raw": "string optional",
-                "terms_plain": "string optional",
+                "terms_english": "string optional",
                 "notes": "string optional"
               }
             },

@@ -66,7 +66,7 @@ class Subscription(TimestampMixin, Base):
     cancel_by_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     cancel_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     terms_raw: Mapped[str | None] = mapped_column(Text, nullable=True)
-    terms_plain: Mapped[str | None] = mapped_column(Text, nullable=True)
+    terms_english: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     user = relationship("User", back_populates="subscriptions")

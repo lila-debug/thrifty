@@ -53,7 +53,7 @@ CREATE TABLE subscriptions (
   cancel_by_at        TIMESTAMPTZ,
   cancel_url          TEXT,
   terms_raw           TEXT,
-  terms_plain         TEXT,
+  terms_english         TEXT,
   notes               TEXT,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),

@@ -29,7 +29,7 @@ class SubscriptionBase(BaseModel):
     cancel_by_at: datetime | None = None
     cancel_url: str | None = None
     terms_raw: str | None = None
-    terms_plain: str | None = None
+    terms_english: str | None = None
     notes: str | None = None
 
     @field_validator("currency")
@@ -64,7 +64,7 @@ class SubscriptionResponse(BaseModel):
     precision: Precision
     cancel_by_at: datetime | None
     cancel_url: str | None
-    terms_plain: str | None
+    terms_english: str | None
     notes: str | None
 
 

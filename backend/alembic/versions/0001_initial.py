@@ -79,7 +79,7 @@ def upgrade() -> None:
         sa.Column("cancel_by_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("cancel_url", sa.Text(), nullable=True),
         sa.Column("terms_raw", sa.Text(), nullable=True),
-        sa.Column("terms_plain", sa.Text(), nullable=True),
+        sa.Column("terms_english", sa.Text(), nullable=True),
         sa.Column("notes", sa.Text(), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()

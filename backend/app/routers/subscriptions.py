@@ -39,7 +39,7 @@ def to_response(subscription: Subscription) -> SubscriptionResponse:
         precision=subscription.precision,
         cancel_by_at=subscription.cancel_by_at,
         cancel_url=subscription.cancel_url,
-        terms_plain=subscription.terms_plain,
+        terms_english=subscription.terms_english,
         notes=subscription.notes,
     )
 

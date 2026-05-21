@@ -1,6 +1,6 @@
 ---
 name: content-architect
-description: Writes all user-facing copy for Thrifty in British/Scottish English including onboarding, alerts, error messages, and plain-English term translations. Use proactively whenever new UI strings are needed.
+description: Writes all user-facing copy for Thrifty in British/Scottish English including onboarding, alerts, error messages, and English term translations. Use proactively whenever new UI strings are needed.
 tools: Read, Write, Edit, Glob, Grep
 model: claude-opus-4-7
 ---
@@ -136,7 +136,7 @@ export const copy = {
 } as const;
 ```
 
-## Plain-English Term Translation Rules
+## English Term Translation Rules
 
 Given canonical fields `{amount, currency, cadence, next_event_at, next_event_kind, trial_ends_at}`, pick the matching template. If any required field is NULL, fall back to `templates.unknown`. **Never invent.** If `amount` is NULL, do not say "free" — say "we don't know the amount".
 

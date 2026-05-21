@@ -9,7 +9,7 @@
 | THR-E3 | Proactive alerting + notifications | 1 | P0 |
 | THR-E4 | StoreKit billing for Thrifty Plus (iOS) | 3 | P1 |
 | THR-E5 | Play Billing for Thrifty Plus (Android) | 3 | P1 |
-| THR-E6 | Plain-English translation | 2 | P1 |
+| THR-E6 | English translation | 2 | P1 |
 | THR-E7 | Plaid monitoring | 3 | P2 |
 | THR-E8 | Monetisation (Thrifty Plus) | 3 | P2 |
 | THR-E9 | Hardening: privacy, ops, audit | 4 | P1 |
@@ -26,7 +26,7 @@
 | THR-S6 | E3 | Uncertainty honesty | No invented values; "unknown" rendered with reason |
 | THR-S7 | E4 | StoreKit entitlement | iOS purchases Thrifty Plus and syncs entitlement state |
 | THR-S8 | E5 | Play Billing entitlement | Android purchases Thrifty Plus and syncs entitlement state |
-| THR-S9 | E6 | Plain-English summary | Template-based summary from known fields, British/Scottish English |
+| THR-S9 | E6 | English summary | Template-based summary from known fields, British/Scottish English |
 | THR-S10 | E7 | Plaid recurring detection | Phase 3 |
 
 ## Tasks (Phase 1 — Build Order)

@@ -34,7 +34,7 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 4. Thrifty normalises all subscriptions into one persistent list, independent of device app state.
 5. Backend computes next event time and alert times.
 6. Proactive alerts fire **before** the event.
-7. Subscription terms are translated into plain British/Scottish English.
+7. Subscription terms are translated into British/Scottish English.
 
 ## 6. In Scope (v1)
 
@@ -46,7 +46,7 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 - Play Billing for Thrifty Plus (Android)
 - Manual add (always available)
 - Persistence across app deletion, offload, and device change
-- Plain-English translation of known subscription fields
+- English translation of known subscription fields
 
 ## 7. Out of Scope (v1)
 
@@ -69,7 +69,7 @@ People in the UK, Canada, Australia, Europe, and Africa who accidentally enter f
 | FR6 | Proactive scheduling: compute next_event_at and one or more alert_at times strictly before next_event_at |
 | FR7 | Alert content: every alert includes (as available) what, when, how much, cancellation window, cancel-by time, or explicit "unknown" with reason |
 | FR8 | Persistence: subscription records persist server-side independent of app install or offload state |
-| FR9 | Plain-language translation: explain subscription and trial terms in plain British/Scottish English; no jargon |
+| FR9 | English translation: explain subscription and trial terms in British/Scottish English; no jargon |
 | FR10 | Uncertainty honesty: never invent amount, event time, or cancellation deadline |
 
 ## 9. Non-Functional Requirements
@@ -101,7 +101,7 @@ Canonical entities: `users`, `auth_identities`, `subscriptions`, `alerts`, `noti
 | Alerts delivered before event time | ≥ 99% |
 | User-reported prevented charges (first 90 days) | ≥ 60% of detected subscriptions surfaced at least one alert acted upon |
 | Subscription detection coverage (auto vs manual) | ≥ 70% auto by end of Phase 2 |
-| Comprehension (plain-English survey) | ≥ 90% rate explanations as "clear" |
+| Comprehension (English survey) | ≥ 90% rate explanations as "clear" |
 
 ## 13. Decisions (Open Questions Resolved)
 

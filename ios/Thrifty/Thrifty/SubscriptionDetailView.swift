@@ -21,8 +21,8 @@ struct SubscriptionDetailView: View {
                     DetailMetric(title: "Certainty", value: subscription.precision.capitalized)
                 }
 
-                if let termsPlain = subscription.termsPlain, !termsPlain.isEmpty {
-                    DetailBlock(title: "Plain English terms", bodyText: termsPlain)
+                if let termsEnglish = subscription.termsEnglish, !termsEnglish.isEmpty {
+                    DetailBlock(title: "English terms", bodyText: termsEnglish)
                 }
 
                 if let notes = subscription.notes, !notes.isEmpty {
